@@ -118,9 +118,8 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }) {
       )}
 
       <aside
-        className={`w-64 bg-brand text-white fixed inset-y-0 left-0 z-50 flex flex-col shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`w-64 bg-brand text-white fixed inset-y-0 left-0 z-50 flex flex-col shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         {/* Brand Header */}
         <div className="p-5 flex items-center justify-between border-b border-white/10 flex-shrink-0">
@@ -153,11 +152,10 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }) {
           <Link
             href="/"
             onClick={() => setMobileOpen?.(false)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition ${
-              isRouteActive('/')
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition ${isRouteActive('/')
                 ? 'bg-white/20 text-white font-semibold shadow-sm'
                 : 'text-white/80 hover:bg-white/10 hover:text-white'
-            }`}
+              }`}
           >
             <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
             <span>Dashboard</span>
@@ -177,18 +175,16 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }) {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileOpen?.(false)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-md transition ${
-                        active
+                      className={`flex items-center justify-between px-3 py-2 rounded-md transition ${active
                           ? 'bg-white/20 text-white font-semibold shadow-sm'
                           : 'text-white/80 hover:bg-white/10 hover:text-white'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3 truncate">
                         {IconComponent && (
                           <IconComponent
-                            className={`w-4 h-4 flex-shrink-0 ${
-                              active ? 'text-brand-accent' : 'text-white/70'
-                            }`}
+                            className={`w-4 h-4 flex-shrink-0 ${active ? 'text-brand-accent' : 'text-white/70'
+                              }`}
                           />
                         )}
                         <span className="truncate">{item.name}</span>
@@ -212,7 +208,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }) {
             AK
           </div>
           <div className="text-xs truncate">
-            <div className="font-semibold text-white truncate">Ashok Kumar</div>
+            <div className="font-semibold text-white truncate">FT</div>
             <div className="text-white/60 truncate">Administrator</div>
           </div>
         </div>

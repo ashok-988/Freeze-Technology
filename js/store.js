@@ -254,7 +254,7 @@ const INITIAL_STATE = {
   ],
 
   employees: [
-    { id: 'EMP-001', code: 'FT-E01', name: 'Ashok Kumar', designation: 'General Manager', phone: '9884955011', salary: '65000', joining: '2020-01-15' },
+    { id: 'EMP-001', code: 'FT-E01', name: 'FT', designation: 'General Manager', phone: '9884955011', salary: '65000', joining: '2020-01-15' },
     { id: 'EMP-004', code: 'FT-E04', name: 'Suresh V', designation: 'Lead AC Technician', phone: '9789012345', salary: '28000', joining: '2021-06-10' },
     { id: 'EMP-005', code: 'FT-E05', name: 'Karthik R', designation: 'Senior HVAC Technician', phone: '9840987654', salary: '25000', joining: '2022-03-01' }
   ],
@@ -345,7 +345,7 @@ class Store {
     const totalSales = invoices.reduce((sum, inv) => sum + (parseFloat(inv.grandTotal) || 0), 0);
     const pendingInvoices = invoices.filter(i => i.paymentStatus === 'Pending');
     const pendingRevenue = pendingInvoices.reduce((sum, inv) => sum + (parseFloat(inv.grandTotal) || 0), 0);
-    
+
     const jobCards = this.get('jobCards');
     const activeJobs = jobCards.filter(j => j.status !== 'Completed');
     const todayJobs = jobCards.filter(j => j.visitDate === new Date().toISOString().split('T')[0]);

@@ -9,7 +9,7 @@ function authenticateToken(req, res, next) {
     // For demo/development mode, inject default Admin context if no token is passed
     req.user = {
       id: 'usr-admin-01',
-      fullName: 'Ashok Kumar',
+      fullName: 'FT',
       email: 'admin@freezetechnology.in',
       role: 'Admin'
     };

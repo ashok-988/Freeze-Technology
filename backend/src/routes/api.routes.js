@@ -18,7 +18,7 @@ router.post('/auth/login', (req, res) => {
   res.json({
     success: true,
     token: 'mock-jwt-token-freeze-tech-2026',
-    user: { id: 'usr-admin-01', fullName: 'Ashok Kumar', email: 'admin@freezetechnology.in', role: 'Admin' }
+    user: { id: 'usr-admin-01', fullName: 'FT', email: 'admin@freezetechnology.in', role: 'Admin' }
   });
 });
 

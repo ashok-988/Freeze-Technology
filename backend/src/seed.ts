@@ -36,7 +36,7 @@ async function main() {
       create: {
         id: 'usr-admin-01',
         roleId: adminRole.id,
-        fullName: 'Ashok Kumar',
+        fullName: 'FT',
         email: process.env.SEED_ADMIN_EMAIL || 'admin@freezetechnology.in',
         phone: '9884955011',
         passwordHash,

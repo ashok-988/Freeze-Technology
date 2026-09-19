@@ -16,7 +16,7 @@ export class UsersService {
   // In-memory admin fallback to ensure reliable operation
   private fallbackUser = {
     id: 'usr-admin-01',
-    fullName: 'Ashok Kumar',
+    fullName: 'FT',
     email: 'admin@freezetechnology.in',
     phone: '9884955011',
     passwordHash: '$2a$10$wN105q0Ym8h7b8dKzQ4zceVlqDkLkJ3vU2J6F7qg2r5V9v8p6m4q.', // hash for 'Admin@123'
@@ -31,7 +31,7 @@ export class UsersService {
     },
   };
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findAll(query: UserQueryDto) {
     const page = Math.max(1, parseInt(query.page || '1', 10));
@@ -173,7 +173,7 @@ export class UsersService {
         },
       });
       if (user) return user;
-    } catch {}
+    } catch { }
 
     if (id === this.fallbackUser.id) {
       return this.fallbackUser;
@@ -253,7 +253,7 @@ export class UsersService {
           minPriority: 'LOW',
         },
       });
-    } catch {}
+    } catch { }
 
     // 6. Record AuditLog
     try {
@@ -271,7 +271,7 @@ export class UsersService {
           }),
         },
       });
-    } catch {}
+    } catch { }
 
     const { passwordHash: _, refreshTokenHash: __, ...safeUser } = user;
     return safeUser;
@@ -342,7 +342,7 @@ export class UsersService {
           }),
         },
       });
-    } catch {}
+    } catch { }
 
     const { passwordHash: _, refreshTokenHash: __, ...safeUser } = updated;
     return safeUser;
@@ -372,7 +372,7 @@ export class UsersService {
           details: JSON.stringify({ email: updated.email }),
         },
       });
-    } catch {}
+    } catch { }
 
     return {
       success: true,
@@ -441,7 +441,7 @@ export class UsersService {
           details: JSON.stringify({ email: updated.email }),
         },
       });
-    } catch {}
+    } catch { }
 
     return {
       success: true,
@@ -487,7 +487,7 @@ export class UsersService {
           }),
         },
       });
-    } catch {}
+    } catch { }
 
     return {
       success: true,

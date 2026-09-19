@@ -660,34 +660,30 @@ export default function SuppliersPage() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => setActiveTab('pos')}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 ${
-              activeTab === 'pos'
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'pos'
                 ? 'bg-brand/10 text-brand border border-brand/20'
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
-            }`}
+              }`}
           >
             <ShoppingBag className="w-3.5 h-3.5" />
             <span>Purchase Orders</span>
-            <span className={`px-2 py-0.5 text-[10px] rounded-full font-bold ${
-              activeTab === 'pos' ? 'bg-brand text-white' : 'bg-gray-200 text-gray-700'
-            }`}>
+            <span className={`px-2 py-0.5 text-[10px] rounded-full font-bold ${activeTab === 'pos' ? 'bg-brand text-white' : 'bg-gray-200 text-gray-700'
+              }`}>
               {purchaseOrders.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveTab('suppliers')}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 ${
-              activeTab === 'suppliers'
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'suppliers'
                 ? 'bg-brand/10 text-brand border border-brand/20'
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
-            }`}
+              }`}
           >
             <Building2 className="w-3.5 h-3.5" />
             <span>Vendor Directory</span>
-            <span className={`px-2 py-0.5 text-[10px] rounded-full font-bold ${
-              activeTab === 'suppliers' ? 'bg-brand text-white' : 'bg-gray-200 text-gray-700'
-            }`}>
+            <span className={`px-2 py-0.5 text-[10px] rounded-full font-bold ${activeTab === 'suppliers' ? 'bg-brand text-white' : 'bg-gray-200 text-gray-700'
+              }`}>
               {suppliers.length}
             </span>
           </button>
@@ -897,7 +893,7 @@ export default function SuppliersPage() {
                 onClick={() => handleOpenSupplierModal()}
                 className="mt-4 bg-brand text-white px-4 py-1.5 rounded-md text-xs font-semibold hover:bg-brand-dark"
               >
-                + Add Supplier
+                Add Supplier
               </button>
             </div>
           ) : (

@@ -309,9 +309,8 @@ export default function ProductsPage() {
       {/* Toast Notification */}
       {toastMessage && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center gap-2 text-white transition-all ${
-            toastMessage.type === 'error' ? 'bg-red-600' : 'bg-brand'
-          }`}
+          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center gap-2 text-white transition-all ${toastMessage.type === 'error' ? 'bg-red-600' : 'bg-brand'
+            }`}
         >
           {toastMessage.type === 'error' ? (
             <AlertCircle className="w-4 h-4" />
@@ -338,7 +337,7 @@ export default function ProductsPage() {
             }}
             className="bg-brand text-white px-4 py-2 rounded-md text-xs font-semibold hover:bg-brand-dark transition flex items-center gap-1.5 shadow-sm"
           >
-            <Plus className="w-4 h-4" /> + Add Product
+            <Plus className="w-4 h-4" /> Add Product
           </button>
         </div>
       </div>
@@ -437,11 +436,10 @@ export default function ProductsPage() {
           {/* Low Stock Toggle */}
           <button
             onClick={() => setOnlyLowStock(!onlyLowStock)}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition ${
-              onlyLowStock
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition ${onlyLowStock
                 ? 'bg-amber-100 text-amber-900 border-amber-300'
                 : 'bg-canvas text-gray-600 border-gray-200 hover:text-gray-900'
-            }`}
+              }`}
           >
             Low Stock Only
           </button>
@@ -490,7 +488,7 @@ export default function ProductsPage() {
               }}
               className="bg-brand text-white px-4 py-2 rounded text-xs font-semibold hover:bg-brand-dark transition"
             >
-              + Add Product
+              Add Product
             </button>
           </div>
         ) : (
@@ -540,11 +538,10 @@ export default function ProductsPage() {
                         <span className="text-gray-400 font-medium">Service Rate</span>
                       ) : (
                         <span
-                          className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                            (p.stockQuantity || 0) <= 5
+                          className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${(p.stockQuantity || 0) <= 5
                               ? 'bg-red-100 text-red-800'
                               : 'bg-emerald-100 text-emerald-800'
-                          }`}
+                            }`}
                         >
                           {p.stockQuantity || 0} Units
                         </span>
@@ -607,9 +604,8 @@ export default function ProductsPage() {
                   placeholder="e.g. Panasonic 1.5 Ton Inverter AC or Water Wash Service"
                   value={formData.productName}
                   onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
-                  className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                    formErrors.productName ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.productName ? 'border-red-500' : 'border-gray-300'
+                    }`}
                 />
                 {formErrors.productName && (
                   <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.productName}</span>
@@ -622,9 +618,8 @@ export default function ProductsPage() {
                   <select
                     value={formData.categoryId}
                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand bg-white ${
-                      formErrors.categoryId ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand bg-white ${formErrors.categoryId ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   >
                     <option value="">Select Category</option>
                     {categories.map((c) => (
@@ -643,9 +638,8 @@ export default function ProductsPage() {
                   <select
                     value={formData.brandId}
                     onChange={(e) => setFormData({ ...formData, brandId: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand bg-white ${
-                      formErrors.brandId ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand bg-white ${formErrors.brandId ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   >
                     <option value="">Select Brand</option>
                     {brands.map((b) => (
@@ -668,9 +662,8 @@ export default function ProductsPage() {
                     placeholder="e.g. CS/CU-NU18YKY5W"
                     value={formData.model}
                     onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                      formErrors.model ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.model ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {formErrors.model && (
                     <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.model}</span>
@@ -699,9 +692,8 @@ export default function ProductsPage() {
                     placeholder="e.g. 42500"
                     value={formData.sellingPrice}
                     onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                      formErrors.sellingPrice ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.sellingPrice ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {formErrors.sellingPrice && (
                     <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.sellingPrice}</span>
@@ -717,9 +709,8 @@ export default function ProductsPage() {
                     placeholder="e.g. 36000"
                     value={formData.purchasePrice}
                     onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                      formErrors.purchasePrice ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.purchasePrice ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {formErrors.purchasePrice && (
                     <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.purchasePrice}</span>
@@ -1008,11 +999,10 @@ export default function ProductsPage() {
                 <button
                   key={tab.key}
                   onClick={() => setDetailTab(tab.key)}
-                  className={`px-3 py-2 border-b-2 font-semibold transition ${
-                    detailTab === tab.key
+                  className={`px-3 py-2 border-b-2 font-semibold transition ${detailTab === tab.key
                       ? 'border-brand text-brand'
                       : 'border-transparent text-gray-500 hover:text-gray-800'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>

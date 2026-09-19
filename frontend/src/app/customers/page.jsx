@@ -263,9 +263,8 @@ export default function CustomersPage() {
       {/* Toast Notification */}
       {toastMessage && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center gap-2 text-white transition-all ${
-            toastMessage.type === 'error' ? 'bg-red-600' : 'bg-brand'
-          }`}
+          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center gap-2 text-white transition-all ${toastMessage.type === 'error' ? 'bg-red-600' : 'bg-brand'
+            }`}
         >
           {toastMessage.type === 'error' ? (
             <AlertCircle className="w-4 h-4" />
@@ -292,7 +291,7 @@ export default function CustomersPage() {
             }}
             className="bg-brand text-white px-4 py-2 rounded-md text-xs font-semibold hover:bg-brand-dark transition flex items-center gap-1.5 shadow-sm"
           >
-            <Plus className="w-4 h-4" /> + Add Customer
+            <Plus className="w-4 h-4" /> Add Customer
           </button>
         </div>
       </div>
@@ -363,11 +362,10 @@ export default function CustomersPage() {
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`px-3 py-1 rounded font-medium transition ${
-                  selectedType === type
+                className={`px-3 py-1 rounded font-medium transition ${selectedType === type
                     ? 'bg-brand text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 {type}
               </button>
@@ -418,7 +416,7 @@ export default function CustomersPage() {
               }}
               className="bg-brand text-white px-4 py-2 rounded text-xs font-semibold hover:bg-brand-dark transition"
             >
-              + Add Customer
+              Add Customer
             </button>
           </div>
         ) : (
@@ -449,11 +447,10 @@ export default function CustomersPage() {
                     </td>
                     <td className="p-3.5">
                       <span
-                        className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] ${
-                          c.customerType === 'Commercial'
+                        className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] ${c.customerType === 'Commercial'
                             ? 'bg-purple-100 text-purple-800'
                             : 'bg-blue-100 text-blue-800'
-                        }`}
+                          }`}
                       >
                         {c.customerType}
                       </span>
@@ -527,9 +524,8 @@ export default function CustomersPage() {
                   placeholder="e.g. Apex Super Specialty Hospital or Ramesh Kumar"
                   value={formData.customerName}
                   onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                  className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                    formErrors.customerName ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.customerName ? 'border-red-500' : 'border-gray-300'
+                    }`}
                 />
                 {formErrors.customerName && (
                   <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.customerName}</span>
@@ -575,9 +571,8 @@ export default function CustomersPage() {
                     placeholder="10-digit mobile"
                     value={formData.mobile}
                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                      formErrors.mobile ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.mobile ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {formErrors.mobile && (
                     <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.mobile}</span>
@@ -608,9 +603,8 @@ export default function CustomersPage() {
                     placeholder="contact@company.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                      formErrors.email ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.email ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {formErrors.email && (
                     <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.email}</span>
@@ -640,9 +634,8 @@ export default function CustomersPage() {
                   placeholder="Plot/Door No, Building, Street, Area"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                    formErrors.address ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.address ? 'border-red-500' : 'border-gray-300'
+                    }`}
                 />
                 {formErrors.address && (
                   <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.address}</span>
@@ -674,9 +667,8 @@ export default function CustomersPage() {
                     type="text"
                     value={formData.pincode}
                     onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${
-                      formErrors.pincode ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${formErrors.pincode ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {formErrors.pincode && (
                     <span className="text-red-500 text-[10px] mt-0.5 block">{formErrors.pincode}</span>
@@ -888,11 +880,10 @@ export default function CustomersPage() {
                     {detailCustomer?.customerCode}
                   </span>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      detailCustomer?.customerType === 'Commercial'
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${detailCustomer?.customerType === 'Commercial'
                         ? 'bg-purple-100 text-purple-800'
                         : 'bg-blue-100 text-blue-800'
-                    }`}
+                      }`}
                   >
                     {detailCustomer?.customerType}
                   </span>
@@ -921,11 +912,10 @@ export default function CustomersPage() {
                 <button
                   key={tab.key}
                   onClick={() => setDetailTab(tab.key)}
-                  className={`px-3 py-2 border-b-2 font-semibold transition ${
-                    detailTab === tab.key
+                  className={`px-3 py-2 border-b-2 font-semibold transition ${detailTab === tab.key
                       ? 'border-brand text-brand'
                       : 'border-transparent text-gray-500 hover:text-gray-800'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>

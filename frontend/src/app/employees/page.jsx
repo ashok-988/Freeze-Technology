@@ -297,9 +297,8 @@ export default function EmployeesPage() {
       {/* Toast Alert */}
       {toastMessage && (
         <div
-          className={`fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg text-xs font-semibold flex items-center gap-2 animate-in fade-in ${
-            toastMessage.isError ? 'bg-rose-600 text-white' : 'bg-brand text-white'
-          }`}
+          className={`fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg text-xs font-semibold flex items-center gap-2 animate-in fade-in ${toastMessage.isError ? 'bg-rose-600 text-white' : 'bg-brand text-white'
+            }`}
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{toastMessage.text}</span>
@@ -478,7 +477,7 @@ export default function EmployeesPage() {
                       onClick={() => handleOpenModal()}
                       className="mt-4 bg-brand text-white px-4 py-1.5 rounded-md text-xs font-semibold hover:bg-brand-dark"
                     >
-                      + Add Employee
+                      Add Employee
                     </button>
                   </td>
                 </tr>
@@ -555,11 +554,10 @@ export default function EmployeesPage() {
                           </button>
                           <button
                             onClick={() => handleToggleStatus(emp)}
-                            className={`p-1 rounded ${
-                              emp.status === 'ACTIVE'
+                            className={`p-1 rounded ${emp.status === 'ACTIVE'
                                 ? 'text-gray-400 hover:text-rose-600 hover:bg-rose-50'
                                 : 'text-gray-400 hover:text-emerald-600 hover:bg-emerald-50'
-                            }`}
+                              }`}
                             title={emp.status === 'ACTIVE' ? 'Deactivate Employee' : 'Activate Employee'}
                           >
                             {emp.status === 'ACTIVE' ? <UserX className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
@@ -917,11 +915,10 @@ export default function EmployeesPage() {
               </button>
               <button
                 onClick={() => handleToggleStatus(selectedEmployee)}
-                className={`py-2 px-4 rounded font-semibold text-xs border transition-colors ${
-                  selectedEmployee.status === 'ACTIVE'
+                className={`py-2 px-4 rounded font-semibold text-xs border transition-colors ${selectedEmployee.status === 'ACTIVE'
                     ? 'border-gray-300 text-rose-600 hover:bg-rose-50'
                     : 'border-emerald-300 text-emerald-700 hover:bg-emerald-50'
-                }`}
+                  }`}
               >
                 {selectedEmployee.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
               </button>

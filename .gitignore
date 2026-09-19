@@ -1,0 +1,101 @@
+# ===========================================================
+# FREEZE TECHNOLOGY ERP — GIT IGNORE CONFIGURATION
+# ===========================================================
+
+# -------------------------------------------------------
+# Dependencies
+# -------------------------------------------------------
+node_modules/
+*/node_modules/
+frontend/node_modules/
+backend/node_modules/
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# -------------------------------------------------------
+# Next.js Frontend Build Outputs & Cache
+# -------------------------------------------------------
+frontend/.next/
+.next/
+*/.next/
+out/
+frontend/out/
+
+# -------------------------------------------------------
+# NestJS Backend Build Outputs
+# -------------------------------------------------------
+backend/dist/
+dist/
+*/dist/
+*.tsbuildinfo
+
+# -------------------------------------------------------
+# Environment Variables & Secrets (CRITICAL)
+# -------------------------------------------------------
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+!.env.template
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+backend/.env
+backend/.env.local
+
+# -------------------------------------------------------
+# Logs & Diagnostic Files
+# -------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# -------------------------------------------------------
+# Operating System & IDE Files
+# -------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# -------------------------------------------------------
+# Test Coverage & Temporary Artifacts
+# -------------------------------------------------------
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+
+# -------------------------------------------------------
+# Scratch & Generated Test Output Files
+# -------------------------------------------------------
+downloaded_invoice.pdf
+generated_test.pdf
+live_downloaded_invoice.pdf
+live_nestjs_invoice.pdf
+generated_test_preview.png
+live_downloaded_preview.png
+live_nestjs_preview.png

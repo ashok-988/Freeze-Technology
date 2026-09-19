@@ -1,0 +1,1073 @@
+// Prisma Schema for Freeze Technology ERP
+// Connected to Supabase PostgreSQL
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client"
+}
+
+// 1. AUTHENTICATION & RBAC
+model User {
+  id               String    @id @default(uuid())
+  employeeId       String?   @unique
+  roleId           String
+  fullName         String
+  email            String    @unique
+  phone            String
+  passwordHash     String
+  refreshTokenHash String?
+  avatarUrl        String?
+  status           String    @default("ACTIVE") // ACTIVE, INACTIVE
+  lastLogin        DateTime?
+  deletedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  role              Role               @relation(fields: [roleId], references: [id])
+  employee          Employee?          @relation(fields: [employeeId], references: [id])
+  quotations        Quotation[]
+  invoices          Invoice[]
+  purchaseOrders    PurchaseOrder[]
+  auditLogs              AuditLog[]
+  notifications          Notification[]
+  notificationPreferences NotificationPreference?
+  serviceStatusLogs      ServiceStatusLog[]
+  stockMovements         StockMovement[]
+  createdVendorBills     VendorBill[]        @relation("CreatedVendorBills")
+  approvedVendorBills    VendorBill[]        @relation("ApprovedVendorBills")
+  createdExpenses        Expense[]           @relation("CreatedExpenses")
+  approvedExpenses       Expense[]           @relation("ApprovedExpenses")
+  paymentAllocations     PaymentAllocation[]
+  createdJournals        JournalEntry[]      @relation("CreatedJournals")
+  approvedJournals       JournalEntry[]      @relation("ApprovedJournals")
+}
+
+model Role {
+  id           String   @id @default(uuid())
+  roleName     String   @unique // Admin, Manager, Sales Executive, Technician, Accountant, etc.
+  code         String?  @unique // SUPER_ADMIN, ADMIN, MANAGER, ACCOUNTS, HR, PROCUREMENT, SERVICE_MANAGER, FIELD_TECHNICIAN, VIEWER
+  description  String?
+  isSystemRole Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  users           User[]
+  rolePermissions RolePermission[]
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  code        String?  @unique // e.g. customers.view, invoices.create, etc.
+  moduleName  String   // Customers, Products, Invoices, Services, AMC, etc.
+  action      String   // view, create, update, delete, export, approve, etc.
+  description String?
+  createdAt   DateTime @default(now())
+
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  id           String @id @default(uuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+// 2. CUSTOMER MANAGEMENT
+model Customer {
+  id              String    @id @default(uuid())
+  customerCode    String    @unique
+  customerType    String    @default("Retail") // Retail, Commercial
+  companyName     String?
+  customerName    String
+  mobile          String
+  alternateMobile String?
+  email           String?
+  gstNumber       String?
+  address         String
+  city            String    @default("Chennai")
+  state           String    @default("Tamil Nadu")
+  pincode         String
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+
+  quotations    Quotation[]
+  invoices      Invoice[]
+  complaints    Complaint[]
+  amcContracts  AMCContract[]
+  installations Installation[]
+  payments      Payment[]
+  assets        Asset[]
+  pmSchedules   PreventiveMaintenanceSchedule[]
+}
+
+// 3. PRODUCT & CATALOG MANAGEMENT
+model Product {
+  id             String    @id @default(uuid())
+  sku            String    @unique
+  productName    String
+  categoryId     String
+  brandId        String
+  model          String
+  serialNumber   String?
+  warrantyMonths Int       @default(12)
+  purchasePrice  Float
+  sellingPrice   Float
+  taxRate        Float     @default(18.0) // GST 18%
+  stockQuantity  Int       @default(0)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+
+  category        Category          @relation(fields: [categoryId], references: [id])
+  brand           Brand             @relation(fields: [brandId], references: [id])
+  inventory       Inventory[]
+  quotationItems  QuotationItem[]
+  invoiceItems    InvoiceItem[]
+  purchaseItems   PurchaseItem[]
+  stockMovements  StockMovement[]
+  complaints      Complaint[]
+  amcContracts    AMCContract[]
+  installations   Installation[]
+  vendorBillItems VendorBillItem[]
+  assets          Asset[]
+  consumedParts   AssetPartConsumption[]
+}
+
+model Category {
+  id           String   @id @default(uuid())
+  categoryName String   @unique // AC, Refrigerator, Washing Machine, Water Cooler, Spare Parts, Service
+  createdAt    DateTime @default(now())
+
+  products Product[]
+}
+
+model Brand {
+  id        String   @id @default(uuid())
+  brandName String   @unique // Panasonic, Daikin, Blue Star, Carrier, Generic
+  createdAt DateTime @default(now())
+
+  products Product[]
+}
+
+// 4. QUOTATION MANAGEMENT
+model Quotation {
+  id              String    @id @default(uuid())
+  quotationNumber String    @unique
+  customerId      String
+  quotationDate   DateTime  @default(now())
+  expiryDate      DateTime
+  subtotal        Float
+  discount        Float     @default(0.0)
+  gstAmount       Float
+  grandTotal      Float
+  status          String    @default("Draft") // Draft, Sent, Approved, Rejected
+  createdById     String
+  deletedAt       DateTime?
+
+  customer  Customer        @relation(fields: [customerId], references: [id])
+  createdBy User            @relation(fields: [createdById], references: [id])
+  items     QuotationItem[]
+  invoice   Invoice?
+}
+
+model QuotationItem {
+  id          String @id @default(uuid())
+  quotationId String
+  productId   String
+  quantity    Int
+  unitPrice   Float
+  discount    Float  @default(0.0)
+  taxAmount   Float
+  total       Float
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
+}
+
+// 5. INVOICE MANAGEMENT
+model Invoice {
+  id            String    @id @default(uuid())
+  invoiceNumber String    @unique
+  quotationId   String?   @unique
+  customerId    String
+  invoiceDate   DateTime  @default(now())
+  subtotal      Float
+  discount      Float     @default(0.0)
+  gstAmount     Float
+  grandTotal    Float
+  paymentStatus String    @default("Pending") // Paid, Pending, Partial
+  paymentMethod String?   // Cash, UPI, Card, Bank Transfer
+  createdById   String
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  customer      Customer       @relation(fields: [customerId], references: [id])
+  quotation     Quotation?     @relation(fields: [quotationId], references: [id])
+  createdBy     User           @relation(fields: [createdById], references: [id])
+  items                 InvoiceItem[]
+  payments              Payment[]
+  installations         Installation[]
+  amcBillingSchedules   AMCBillingSchedule[]
+}
+
+model InvoiceItem {
+  id           String @id @default(uuid())
+  invoiceId    String
+  productId    String
+  description  String
+  quantity     Int
+  sellingPrice Float
+  taxAmount    Float
+  total        Float
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+// 6. INVENTORY & WAREHOUSE
+model Inventory {
+  id             String   @id @default(uuid())
+  productId      String
+  warehouseName  String   @default("Main Warehouse - Thoraipakkam")
+  availableStock Int
+  reservedStock  Int      @default(0)
+  minimumStock   Int      @default(5)
+  updatedAt      DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model StockMovement {
+  id                String    @id @default(uuid())
+  productId         String
+  movementType      String    // IN, OUT, ADJUSTMENT, TRANSFER
+  referenceType     String    // Receipt, Issue, Adjustment, Transfer, Purchase, Sale, Service, Installation
+  referenceId       String?
+  quantity          Int
+  previousQuantity  Int?
+  resultingQuantity Int?
+  unitCost          Float?
+  remarks           String?
+  createdById       String?
+  createdAt         DateTime  @default(now())
+
+  product   Product @relation(fields: [productId], references: [id])
+  createdBy User?   @relation(fields: [createdById], references: [id])
+}
+
+// 7. SUPPLIER & PURCHASES
+model Supplier {
+  id            String    @id @default(uuid())
+  supplierCode  String    @unique
+  companyName   String
+  contactPerson String
+  phone         String
+  email         String?
+  gstNumber     String?
+  address       String
+  city          String    @default("Chennai")
+  state         String    @default("Tamil Nadu")
+  pincode       String?
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  purchaseOrders PurchaseOrder[]
+  vendorBills    VendorBill[]
+  expenses       Expense[]
+}
+
+model PurchaseOrder {
+  id                   String    @id @default(uuid())
+  poNumber             String    @unique
+  supplierId           String
+  purchaseDate         DateTime  @default(now())
+  expectedDeliveryDate DateTime?
+  receivedDate         DateTime?
+  subtotal             Float
+  gstAmount            Float
+  totalAmount          Float
+  status               String    @default("Draft") // Draft, Submitted, Approved, Partially Received, Received, Cancelled
+  paymentStatus        String    @default("Pending") // Pending, Paid
+  notes                String?
+  createdById          String
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @default(now()) @updatedAt
+
+  supplier  Supplier       @relation(fields: [supplierId], references: [id])
+  createdBy   User           @relation(fields: [createdById], references: [id])
+  items       PurchaseItem[]
+  vendorBills VendorBill[]
+}
+
+model PurchaseItem {
+  id               String @id @default(uuid())
+  purchaseOrderId  String
+  productId        String
+  quantity         Int
+  receivedQuantity Int    @default(0)
+  unitPrice        Float
+  taxAmount        Float
+  total            Float
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  product       Product       @relation(fields: [productId], references: [id])
+}
+
+// 8. SERVICES & JOB CARDS
+model Complaint {
+  id                   String   @id @default(uuid())
+  complaintNumber      String   @unique
+  customerId           String
+  productId            String?
+  complaintDescription String
+  priority             String   @default("Medium") // Low, Medium, High
+  status               String   @default("Open") // Open, In Progress, Closed
+  createdAt            DateTime @default(now())
+
+  customer Customer  @relation(fields: [customerId], references: [id])
+  product  Product?  @relation(fields: [productId], references: [id])
+  jobCard  JobCard?
+}
+
+model JobCard {
+  id            String   @id @default(uuid())
+  jobNumber     String   @unique
+  complaintId   String   @unique
+  technicianId  String
+  visitDate     DateTime
+  status        String   @default("Assigned") // Pending, Assigned, In Progress, Completed, Cancelled
+  estimatedCost Float?
+  actualCost    Float?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  complaint             Complaint                       @relation(fields: [complaintId], references: [id])
+  technician            Employee                        @relation(fields: [technicianId], references: [id])
+  serviceHistory        ServiceHistory[]
+  serviceStatusLogs     ServiceStatusLog[]
+  assetServiceHistories AssetServiceHistory[]
+  pmSchedules           PreventiveMaintenanceSchedule[]
+  consumedParts         AssetPartConsumption[]
+}
+
+model ServiceHistory {
+  id                String   @id @default(uuid())
+  jobCardId         String
+  technicianId      String
+  workDone          String
+  sparePartsUsed    String?
+  customerSignature String?
+  completedAt       DateTime @default(now())
+
+  jobCard    JobCard  @relation(fields: [jobCardId], references: [id])
+  technician Employee @relation(fields: [technicianId], references: [id])
+}
+
+model ServiceStatusLog {
+  id             String   @id @default(uuid())
+  jobCardId      String
+  previousStatus String
+  currentStatus  String
+  updatedById    String
+  updatedAt      DateTime @default(now())
+
+  jobCard   JobCard @relation(fields: [jobCardId], references: [id], onDelete: Cascade)
+  updatedBy User    @relation(fields: [updatedById], references: [id])
+}
+
+// 9. AMC CONTRACTS
+model AMCContract {
+  id                   String   @id @default(uuid())
+  amcNumber            String   @unique
+  customerId           String
+  productId            String
+  startDate            DateTime
+  endDate              DateTime
+  totalVisits          Int      @default(4)
+  completedVisits      Int      @default(0)
+  remainingVisits      Int      @default(4)
+  status               String   @default("Active") // Active, Expiring Soon, Expired, Draft, Renewed, Cancelled
+  contractType         String   @default("COMPREHENSIVE") // COMPREHENSIVE, NON_COMPREHENSIVE, PREVENTIVE, BREAKDOWN, CUSTOM
+  contractValue        Float    @default(0.0)
+  gstRate              Float    @default(18.0)
+  taxableAmount        Float    @default(0.0)
+  gstAmount            Float    @default(0.0)
+  totalAmount          Float    @default(0.0)
+  serviceFrequency     String   @default("QUARTERLY") // MONTHLY, BI_MONTHLY, QUARTERLY, HALF_YEARLY, ANNUAL
+  billingFrequency     String   @default("QUARTERLY") // MONTHLY, QUARTERLY, HALF_YEARLY, ANNUAL, CUSTOM
+  billingStatus        String   @default("PENDING") // PENDING, PARTIALLY_BILLED, FULLY_BILLED
+  renewalStatus        String   @default("NOT_RENEWED") // NOT_RENEWED, RENEWAL_DUE, RENEWED
+  previousContractId   String?
+  assignedTechnicianId String?
+  terms                String?
+  notes                String?
+
+  customer           Customer                        @relation(fields: [customerId], references: [id])
+  product            Product                         @relation(fields: [productId], references: [id])
+  assignedTechnician Employee?                       @relation("AssignedAmcTechnician", fields: [assignedTechnicianId], references: [id])
+  visits             AMCVisit[]
+  billingSchedules   AMCBillingSchedule[]
+  pmSchedules        PreventiveMaintenanceSchedule[]
+  coveredAssets      AMCContractAsset[]
+}
+
+model AMCVisit {
+  id            String    @id @default(uuid())
+  amcContractId String
+  visitNumber   Int
+  scheduledDate DateTime
+  completedDate DateTime?
+  technicianId  String?
+  remarks       String?
+
+  amcContract AMCContract @relation(fields: [amcContractId], references: [id], onDelete: Cascade)
+  technician  Employee?   @relation(fields: [technicianId], references: [id])
+}
+
+// 10. INSTALLATION TRACKER
+model Installation {
+  id                 String    @id @default(uuid())
+  installationNumber String?   @unique
+  invoiceId          String?
+  customerId         String
+  productId          String?
+  technicianId       String?
+  installationDate   DateTime?
+  completedDate      DateTime?
+  installationStatus String    @default("Pending") // Pending, Assigned, Scheduled, In Progress, Completed, Cancelled
+  customerVerified   Boolean   @default(false)
+  notes              String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+
+  invoice      Invoice?   @relation(fields: [invoiceId], references: [id])
+  customer     Customer   @relation(fields: [customerId], references: [id])
+  product      Product?   @relation(fields: [productId], references: [id])
+  technician   Employee?  @relation(fields: [technicianId], references: [id])
+  assets       Asset[]
+}
+
+// 11. EMPLOYEE & ATTENDANCE
+model Employee {
+  id             String    @id @default(uuid())
+  employeeCode   String    @unique
+  fullName       String
+  designation    String    // Technician, Manager, Executive, Accountant
+  department     String    @default("Service & Operations")
+  employmentType String    @default("Full-Time") // Full-Time, Part-Time, Contract
+  phone          String
+  email          String?
+  address        String?
+  salary         Float     @default(25000)
+  joiningDate    DateTime  @default(now())
+  status         String    @default("ACTIVE")
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  user                  User?
+  jobCards              JobCard[]
+  serviceHistory        ServiceHistory[]
+  amcVisits             AMCVisit[]
+  installations         Installation[]
+  attendance            Attendance[]
+  leaveRequests         LeaveRequest[]
+  payrollRecords        PayrollRecord[]
+  expenses              Expense[]
+  assignedAssets        Asset[]                         @relation("AssignedAssetTechnician")
+  pmSchedules           PreventiveMaintenanceSchedule[] @relation("AssignedPmTechnician")
+  assignedAmcContracts  AMCContract[]                   @relation("AssignedAmcTechnician")
+  assetServiceHistories AssetServiceHistory[]           @relation("TechnicianAssetHistory")
+}
+
+model Attendance {
+  id                  String    @id @default(uuid())
+  employeeId          String
+  attendanceDate      DateTime  @default(now())
+  checkIn             DateTime?
+  checkOut            DateTime?
+  workingHours        Float?
+  totalWorkingMinutes Int?
+  overtimeMinutes     Int?      @default(0)
+  attendanceStatus    String    @default("Present") // Present, Absent, Half Day, Leave, Holiday, Week Off, Late, On Duty
+  leaveReason         String?
+  remarks             String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
+
+model LeaveRequest {
+  id             String   @id @default(uuid())
+  employeeId     String
+  leaveType      String   // Casual, Medical, Paid
+  startDate      DateTime
+  endDate        DateTime
+  reason         String
+  approvalStatus String   @default("Pending") // Pending, Approved, Rejected
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
+
+// 12. PAYMENTS & AUDIT LOGS
+model Payment {
+  id               String   @id @default(uuid())
+  invoiceId        String
+  customerId       String
+  paymentMethod    String   // Cash, UPI, Card, Bank Transfer
+  paymentReference String?
+  amount           Float
+  paymentDate      DateTime @default(now())
+  remarks          String?
+
+  invoice  Invoice  @relation(fields: [invoiceId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+}
+
+model Notification {
+  id                 String    @id @default(uuid())
+  notificationNumber String?   // e.g. NOTIF-2026-0001
+  userId             String
+  title              String
+  message            String
+  notificationType   String    @default("Info") // Info, Warning, Error, Success
+  category           String    @default("SYSTEM") // SYSTEM, SALES, CUSTOMER, INVENTORY, PROCUREMENT, PAYMENTS, PAYABLES, PAYROLL, EMPLOYEE, ATTENDANCE, SERVICE, AMC, INSTALLATION, ASSET, PREVENTIVE_MAINTENANCE, GST, REPORTS
+  priority           String    @default("NORMAL") // LOW, NORMAL, HIGH, CRITICAL
+  sourceModule       String?   // INVOICES, PAYMENTS, INVENTORY, PURCHASE_ORDERS, PAYABLES, PAYROLL, EMPLOYEES, ATTENDANCE, AMC, ASSETS, PREVENTIVE_MAINTENANCE, GST, SYSTEM
+  sourceEntityId     String?
+  sourceReference    String?   // Human-readable reference (e.g. INV-2026-0001, VB-2026-0006)
+  actionUrl          String?   // Frontend route (e.g. /invoices, /payables, /preventive-maintenance)
+  isRead             Boolean   @default(false)
+  readAt             DateTime?
+  isArchived         Boolean   @default(false)
+  archivedAt         DateTime?
+  scheduledFor       DateTime?
+  expiresAt          DateTime?
+  eventKey           String?   // Idempotency / deduplication key
+  metadata           String?   // JSON string if extra parameters
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([priority])
+  @@index([category])
+  @@index([sourceModule])
+  @@index([createdAt])
+  @@index([scheduledFor])
+  @@index([eventKey])
+  @@index([isArchived])
+}
+
+model NotificationPreference {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  salesAlerts       Boolean  @default(true)
+  paymentAlerts     Boolean  @default(true)
+  inventoryAlerts   Boolean  @default(true)
+  procurementAlerts Boolean  @default(true)
+  payablesAlerts    Boolean  @default(true)
+  payrollAlerts     Boolean  @default(true)
+  employeeAlerts    Boolean  @default(true)
+  attendanceAlerts  Boolean  @default(true)
+  serviceAlerts     Boolean  @default(true)
+  amcAlerts         Boolean  @default(true)
+  assetAlerts       Boolean  @default(true)
+  pmAlerts          Boolean  @default(true)
+  systemAlerts      Boolean  @default(true)
+  minPriority       String   @default("LOW") // LOW, NORMAL, HIGH, CRITICAL
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  moduleName String
+  action     String
+  recordId   String?
+  ipAddress  String?
+  details    String?  // JSON or text metadata
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([moduleName])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model SystemSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  category    String   // COMPANY, FINANCE, TAX, PAYROLL, INVENTORY, NOTIFICATIONS, SECURITY, OPERATIONS, DOCUMENTS
+  description String?
+  dataType    String   @default("STRING") // STRING, NUMBER, BOOLEAN, JSON
+  isSensitive Boolean  @default(false)
+  isEditable  Boolean  @default(true)
+  updatedById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([category])
+  @@index([key])
+}
+
+model CompanySettings {
+  id            String @id @default(uuid())
+  companyName   String @default("FREEZE TECHNOLOGY")
+  subTitle      String @default("Air Conditioning & Refrigeration Sales & Service")
+  gstNumber     String @default("33BKCPD7319A2ZU")
+  brandAuth     String @default("Panasonic Authorised Sales & Service")
+  regdOffice    String @default("C15, 1st Cross Street, PTC Quarters, Thoraipakkam, OMR, Chennai - 600 097")
+  phone         String @default("044-35723836")
+  cell          String @default("9884955011")
+  email         String @default("freezetechnology.ft@gmail.com")
+  bankName      String @default("Axis Bank")
+  bankBranch    String @default("Thoraipakkam")
+  bankAccountNo String @default("915020010100166")
+  ifscCode      String @default("UTIB0001566")
+}
+
+// 13. PAYROLL & SALARY PROCESSING
+model PayrollPeriod {
+  id               String    @id @default(uuid())
+  payrollNumber    String    @unique
+  month            Int       // 1 - 12
+  year             Int       // e.g. 2026
+  periodStart      DateTime
+  periodEnd        DateTime
+  status           String    @default("DRAFT") // DRAFT, CALCULATED, REVIEW, APPROVED, PAID, CANCELLED
+  totalEmployees   Int       @default(0)
+  totalGrossSalary Float     @default(0)
+  totalDeductions  Float     @default(0)
+  totalNetSalary   Float     @default(0)
+  approvedAt       DateTime?
+  approvedById     String?
+  paidAt           DateTime?
+  paidById         String?
+  paymentMethod    String?
+  paymentReference String?
+  remarks          String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
+
+  records          PayrollRecord[]
+}
+
+model PayrollRecord {
+  id               String    @id @default(uuid())
+  payrollPeriodId  String
+  employeeId       String
+  employeeCode     String
+  employeeName     String
+  designation      String
+  department       String
+  workingDays      Int       @default(26)
+  presentDays      Float     @default(0)
+  absentDays       Float     @default(0)
+  leaveDays        Float     @default(0)
+  halfDays         Float     @default(0)
+  paidDays         Float     @default(0)
+  overtimeMinutes  Int       @default(0)
+  overtimeHours    Float     @default(0)
+  overtimeAmount   Float     @default(0)
+  basicSalary      Float     @default(0)
+  hra              Float     @default(0)
+  conveyance       Float     @default(0)
+  specialAllowance Float     @default(0)
+  otherAllowance   Float     @default(0)
+  grossSalary      Float     @default(0)
+  lossOfPay        Float     @default(0)
+  advanceDeduction Float     @default(0)
+  loanDeduction    Float     @default(0)
+  otherDeduction   Float     @default(0)
+  totalDeductions  Float     @default(0)
+  netSalary        Float     @default(0)
+  paymentStatus    String    @default("PENDING") // PENDING, PAID
+  paymentReference String?
+  paidAt           DateTime?
+  remarks          String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
+
+  payrollPeriod    PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Cascade)
+  employee         Employee      @relation(fields: [employeeId], references: [id])
+
+  @@unique([payrollPeriodId, employeeId])
+}
+
+// 14. EXPENSE MANAGEMENT & ACCOUNTS PAYABLE
+model ExpenseCategory {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  code        String?   @unique
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+
+  expenses    Expense[]
+}
+
+model VendorBill {
+  id                  String    @id @default(uuid())
+  billNumber          String    @unique // VB-2026-0001
+  supplierId          String
+  purchaseOrderId     String?
+  vendorInvoiceNumber String?
+  vendorInvoiceDate   DateTime?
+  billDate            DateTime  @default(now())
+  dueDate             DateTime
+  status              String    @default("DRAFT") // DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED
+  paymentStatus       String    @default("UNPAID") // UNPAID, PARTIALLY_PAID, PAID, OVERDUE
+  subtotal            Float     @default(0)
+  taxAmount           Float     @default(0)
+  discountAmount      Float     @default(0)
+  totalAmount         Float     @default(0)
+  paidAmount          Float     @default(0)
+  balanceAmount       Float     @default(0)
+  gstNumber           String?
+  notes               String?
+  approvedAt          DateTime?
+  approvedById        String?
+  paidAt              DateTime?
+  createdById         String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+
+  supplier            Supplier            @relation(fields: [supplierId], references: [id])
+  purchaseOrder       PurchaseOrder?      @relation(fields: [purchaseOrderId], references: [id])
+  approvedBy          User?               @relation("ApprovedVendorBills", fields: [approvedById], references: [id])
+  createdBy           User?               @relation("CreatedVendorBills", fields: [createdById], references: [id])
+  items               VendorBillItem[]
+  allocations         PaymentAllocation[]
+}
+
+model VendorBillItem {
+  id           String      @id @default(uuid())
+  vendorBillId String
+  productId    String?
+  description  String
+  quantity     Int         @default(1)
+  unitPrice    Float       @default(0)
+  taxRate      Float       @default(18) // 0, 5, 12, 18, 28
+  taxAmount    Float       @default(0)
+  lineSubtotal Float       @default(0)
+  lineTotal    Float       @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now()) @updatedAt
+
+  vendorBill   VendorBill  @relation(fields: [vendorBillId], references: [id], onDelete: Cascade)
+  product      Product?    @relation(fields: [productId], references: [id])
+}
+
+model Expense {
+  id               String          @id @default(uuid())
+  expenseNumber    String          @unique // EXP-2026-0001
+  categoryId       String
+  supplierId       String?
+  employeeId       String?
+  expenseDate      DateTime        @default(now())
+  description      String
+  referenceNumber  String?
+  subtotal         Float           @default(0)
+  taxAmount        Float           @default(0)
+  totalAmount      Float           @default(0)
+  status           String          @default("DRAFT") // DRAFT, SUBMITTED, APPROVED, REJECTED, PAID, CANCELLED
+  paymentStatus    String          @default("UNPAID") // UNPAID, PARTIALLY_PAID, PAID
+  paidAmount       Float           @default(0)
+  balanceAmount    Float           @default(0)
+  paymentMethod    String?
+  paymentReference String?
+  notes            String?
+  approvedAt       DateTime?
+  approvedById     String?
+  paidAt           DateTime?
+  createdById      String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now()) @updatedAt
+
+  category         ExpenseCategory @relation(fields: [categoryId], references: [id])
+  supplier         Supplier?       @relation(fields: [supplierId], references: [id])
+  employee         Employee?       @relation(fields: [employeeId], references: [id])
+  approvedBy       User?           @relation("ApprovedExpenses", fields: [approvedById], references: [id])
+  createdBy        User?           @relation("CreatedExpenses", fields: [createdById], references: [id])
+  allocations      PaymentAllocation[]
+}
+
+model PaymentAllocation {
+  id               String       @id @default(uuid())
+  allocationType   String       // VENDOR_BILL, EXPENSE
+  vendorBillId     String?
+  expenseId        String?
+  paymentDate      DateTime     @default(now())
+  paymentMethod    String       // Cash, UPI, Card, Bank Transfer, Cheque
+  paymentReference String?
+  amount           Float
+  notes            String?
+  createdById      String?
+  createdAt        DateTime     @default(now())
+
+  vendorBill       VendorBill?  @relation(fields: [vendorBillId], references: [id], onDelete: Cascade)
+  expense          Expense?     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  createdBy        User?        @relation(fields: [createdById], references: [id])
+}
+
+// 19. PHASE 15 — ASSET MANAGEMENT, AMC BILLING & PREVENTIVE MAINTENANCE
+model Asset {
+  id                String    @id @default(uuid())
+  assetNumber       String    @unique // AST-2026-0001
+  customerId        String
+  installationId    String?
+  productId         String
+  brandName         String?
+  modelNumber       String?
+  serialNumber      String?   @unique
+  capacitySpec      String?   // 1.5 Ton, 2.0 Ton, Cassette, Inverter Split
+  installationDate  DateTime?
+  warrantyStartDate DateTime?
+  warrantyEndDate   DateTime?
+  location          String?   // Server Room, 2nd Floor Office, Conference Hall
+  siteAddress       String?
+  floorArea         String?
+  status            String    @default("ACTIVE") // ACTIVE, UNDER_SERVICE, BREAKDOWN, INACTIVE, REPLACED, SCRAPPED
+  amcStatus         String    @default("NONE") // NONE, COVERED, EXPIRING_SOON, EXPIRED
+  lastServiceDate   DateTime?
+  nextServiceDate   DateTime?
+  technicianId      String?
+  notes             String?
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+
+  customer          Customer                        @relation(fields: [customerId], references: [id])
+  installation      Installation?                   @relation(fields: [installationId], references: [id])
+  product           Product                         @relation(fields: [productId], references: [id])
+  technician        Employee?                       @relation("AssignedAssetTechnician", fields: [technicianId], references: [id])
+  serviceHistories  AssetServiceHistory[]
+  pmSchedules       PreventiveMaintenanceSchedule[]
+  amcContractAssets AMCContractAsset[]
+  partsConsumed     AssetPartConsumption[]
+}
+
+model AssetServiceHistory {
+  id           String    @id @default(uuid())
+  assetId      String
+  serviceType  String    // PREVENTIVE, BREAKDOWN, INSTALLATION, WARRANTY_CHECK
+  jobCardId    String?
+  technicianId String?
+  serviceDate  DateTime  @default(now())
+  complaint    String?
+  diagnosis    String?
+  resolution   String?
+  cost         Float     @default(0.0)
+  notes        String?
+  createdAt    DateTime  @default(now())
+
+  asset      Asset      @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  jobCard    JobCard?   @relation(fields: [jobCardId], references: [id])
+  technician Employee?  @relation("TechnicianAssetHistory", fields: [technicianId], references: [id])
+}
+
+model PreventiveMaintenanceSchedule {
+  id                      String    @id @default(uuid())
+  pmNumber                String    @unique // PM-2026-0001
+  assetId                 String
+  customerId              String
+  amcContractId           String?
+  frequency               String    @default("QUARTERLY") // MONTHLY, BI_MONTHLY, QUARTERLY, HALF_YEARLY, ANNUAL
+  plannedDate             DateTime
+  technicianId            String?
+  checklist               String?   // JSON serialized array of checklist items
+  status                  String    @default("SCHEDULED") // SCHEDULED, ASSIGNED, IN_PROGRESS, COMPLETED, MISSED, CANCELLED
+  completionDate          DateTime?
+  actualStartTime         DateTime?
+  actualEndTime           DateTime?
+  observations            String?
+  workPerformed           String?
+  recommendations         String?
+  customerAcknowledgement  String?
+  technicianRemarks       String?
+  jobCardId               String?
+  remarks                 String?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @default(now()) @updatedAt
+
+  asset         Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  customer      Customer               @relation(fields: [customerId], references: [id])
+  amcContract   AMCContract?           @relation(fields: [amcContractId], references: [id])
+  technician    Employee?              @relation("AssignedPmTechnician", fields: [technicianId], references: [id])
+  jobCard       JobCard?               @relation(fields: [jobCardId], references: [id])
+  partsConsumed AssetPartConsumption[]
+}
+
+model AssetPartConsumption {
+  id              String   @id @default(uuid())
+  assetId         String
+  pmScheduleId    String?
+  jobCardId       String?
+  productId       String
+  quantity        Int      @default(1)
+  unitCost        Float    @default(0.0)
+  totalCost       Float    @default(0.0)
+  stockMovementId String?
+  consumedAt      DateTime @default(now())
+
+  asset      Asset                          @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  pmSchedule PreventiveMaintenanceSchedule? @relation(fields: [pmScheduleId], references: [id], onDelete: Cascade)
+  jobCard    JobCard?                       @relation(fields: [jobCardId], references: [id])
+  product    Product                        @relation(fields: [productId], references: [id])
+}
+
+model AMCBillingSchedule {
+  id                  String    @id @default(uuid())
+  amcContractId       String
+  billingPeriodNumber Int
+  periodLabel         String    // e.g. "Q1 (Apr 2026 - Jun 2026)"
+  periodStart         DateTime
+  periodEnd           DateTime
+  dueDate             DateTime
+  taxableAmount       Float     @default(0.0)
+  gstAmount           Float     @default(0.0)
+  totalAmount         Float     @default(0.0)
+  status              String    @default("PENDING") // PENDING, INVOICED, PAID, CANCELLED
+  invoiceId           String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+
+  amcContract AMCContract @relation(fields: [amcContractId], references: [id], onDelete: Cascade)
+  invoice     Invoice?    @relation(fields: [invoiceId], references: [id])
+}
+
+model AMCContractAsset {
+  id            String   @id @default(uuid())
+  amcContractId String
+  assetId       String
+  createdAt     DateTime @default(now())
+
+  amcContract AMCContract @relation(fields: [amcContractId], references: [id], onDelete: Cascade)
+  asset       Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([amcContractId, assetId])
+}
+
+// ============================================================
+// PHASE 19 — GENERAL LEDGER & DOUBLE-ENTRY ACCOUNTING
+// ============================================================
+
+model Account {
+  id                 String    @id @default(uuid())
+  accountCode        String    @unique // e.g. 1010, 1020, 2010, 4010, 5010
+  accountName        String    // e.g. "Cash in Hand", "HDFC Bank Account", "Accounts Receivable"
+  accountType        String    // ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE
+  accountGroup       String    // CASH, BANK, RECEIVABLES, INVENTORY, FIXED_ASSETS, OTHER_CURRENT_ASSETS, PAYABLES, GST_PAYABLE, TDS_PAYABLE, LOANS, OTHER_CURRENT_LIABILITIES, CAPITAL, RETAINED_EARNINGS, CURRENT_YEAR_PL, PRODUCT_SALES, SERVICE_REVENUE, AMC_REVENUE, OTHER_INCOME, COGS, SALARIES, RENT, UTILITIES, FUEL, REPAIRS, MAINTENANCE, ADMIN, DEPRECIATION, OTHER_OPERATING_EXPENSES
+  parentId           String?
+  description        String?
+  normalBalance      String    @default("DEBIT") // DEBIT, CREDIT
+  isSystemAccount    Boolean   @default(false)
+  isActive           Boolean   @default(true)
+  allowPosting       Boolean   @default(true)
+  openingBalance     Float     @default(0.0)
+  openingBalanceDate DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+
+  parent             Account?      @relation("AccountHierarchy", fields: [parentId], references: [id])
+  children           Account[]     @relation("AccountHierarchy")
+  journalLines       JournalLine[]
+
+  @@index([accountType])
+  @@index([accountGroup])
+  @@index([isActive])
+}
+
+model AccountingPeriod {
+  id            String    @id @default(uuid())
+  financialYear String    // e.g. "2026-27"
+  periodName    String    // e.g. "FY 2026-27 (Annual)" or "April 2026"
+  startDate     DateTime
+  endDate       DateTime
+  status        String    @default("OPEN") // OPEN, CLOSED, LOCKED
+  closedAt      DateTime?
+  closedById    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+
+  journalEntries JournalEntry[]
+
+  @@index([financialYear])
+  @@index([status])
+}
+
+model JournalEntry {
+  id                 String    @id @default(uuid())
+  journalNumber      String    @unique // e.g. "JE-2026-000001"
+  entryDate          DateTime  @default(now())
+  accountingPeriodId String
+  referenceType      String    @default("MANUAL") // INVOICE, PAYMENT, VENDOR_BILL, VENDOR_PAYMENT, EXPENSE, PAYROLL, AMC_BILLING, ASSET_ACQUISITION, MANUAL, REVERSAL
+  referenceId        String?
+  referenceNumber    String?   // e.g. INV-2026-0001, VB-2026-0001, EXP-2026-0001, PAYR-2026-0001
+  narration          String
+  status             String    @default("POSTED") // DRAFT, POSTED, REVERSED
+  sourceModule       String?   // INVOICES, PAYMENTS, PAYABLES, EXPENSES, PAYROLL, AMC, ASSETS, MANUAL, SYSTEM
+  sourceEntityId     String?
+  totalDebit         Float     @default(0.0)
+  totalCredit        Float     @default(0.0)
+  createdById        String?
+  approvedById       String?
+  approvedAt         DateTime?
+  postedAt           DateTime? @default(now())
+  reversedEntryId    String?   @unique
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+
+  accountingPeriod   AccountingPeriod @relation(fields: [accountingPeriodId], references: [id])
+  createdBy          User?            @relation("CreatedJournals", fields: [createdById], references: [id])
+  approvedBy         User?            @relation("ApprovedJournals", fields: [approvedById], references: [id])
+  reversedEntry      JournalEntry?    @relation("JournalReversal", fields: [reversedEntryId], references: [id])
+  reversingEntry     JournalEntry?    @relation("JournalReversal")
+  lines              JournalLine[]
+
+  @@index([entryDate])
+  @@index([status])
+  @@index([referenceType])
+  @@index([sourceModule])
+  @@index([sourceEntityId])
+}
+
+model JournalLine {
+  id             String   @id @default(uuid())
+  journalEntryId String
+  accountId      String
+  debit          Float    @default(0.0)
+  credit         Float    @default(0.0)
+  description    String?
+  reference      String?
+  costCenter     String?
+  createdAt      DateTime @default(now())
+
+  journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  account        Account      @relation(fields: [accountId], references: [id])
+
+  @@index([journalEntryId])
+  @@index([accountId])
+}
+

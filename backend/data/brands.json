@@ -1,0 +1,37 @@
+[
+  {
+    "id": "brd-001",
+    "brandName": "Panasonic",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "brd-002",
+    "brandName": "Daikin",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "brd-003",
+    "brandName": "Blue Star",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "brd-004",
+    "brandName": "Carrier",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "brd-005",
+    "brandName": "Voltas",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "brd-006",
+    "brandName": "Generic",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "brd-007",
+    "brandName": "Service",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  }
+]

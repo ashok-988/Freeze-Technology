@@ -1,0 +1,198 @@
+[
+  {
+    "id": "prod-uuid-1787155253104",
+    "sku": "AC-PAN-008",
+    "productName": "Panasonic 1.5",
+    "categoryId": "cat-001",
+    "brandId": "brd-001",
+    "model": "CU-NU18KY5W",
+    "serialNumber": "",
+    "warrantyMonths": 12,
+    "purchasePrice": 37000,
+    "sellingPrice": 42000,
+    "taxRate": 28,
+    "stockQuantity": 1,
+    "deletedAt": null,
+    "createdAt": "2026-08-19T16:00:53.104Z",
+    "category": {
+      "id": "cat-001",
+      "categoryName": "AC",
+      "createdAt": "2026-08-01T10:00:00.000Z"
+    },
+    "brand": {
+      "id": "brd-001",
+      "brandName": "Panasonic",
+      "createdAt": "2026-08-01T10:00:00.000Z"
+    }
+  },
+  {
+    "id": "prod-uuid-1787137506435",
+    "sku": "AC-PAN-10T",
+    "productName": "Panasonic 1.0 Ton 5 Star Inverter Split AC",
+    "categoryId": "cat-001",
+    "brandId": "brd-001",
+    "model": "CS/CU-NU12YKY5W",
+    "serialNumber": "PAN-AC-12001",
+    "warrantyMonths": 12,
+    "purchasePrice": 31000,
+    "sellingPrice": 37500,
+    "taxRate": 18,
+    "stockQuantity": 12,
+    "deletedAt": "2026-08-19T11:06:01.941Z",
+    "createdAt": "2026-08-19T11:05:06.435Z",
+    "category": {
+      "id": "cat-001",
+      "categoryName": "AC",
+      "createdAt": "2026-08-01T10:00:00.000Z"
+    },
+    "brand": {
+      "id": "brd-001",
+      "brandName": "Panasonic",
+      "createdAt": "2026-08-01T10:00:00.000Z"
+    }
+  },
+  {
+    "id": "prod-uuid-001",
+    "sku": "AC-PAN-15T",
+    "productName": "Panasonic 1.5 Ton 5 Star Inverter Split AC",
+    "categoryId": "cat-001",
+    "brandId": "brd-001",
+    "model": "CS/CU-NU18YKY5W",
+    "serialNumber": "PAN-AC-18942",
+    "warrantyMonths": 12,
+    "purchasePrice": 36000,
+    "sellingPrice": 42500,
+    "taxRate": 18,
+    "stockQuantity": 14,
+    "deletedAt": null,
+    "createdAt": "2026-08-01T10:00:00.000Z",
+    "category": {
+      "id": "cat-001",
+      "categoryName": "AC"
+    },
+    "brand": {
+      "id": "brd-001",
+      "brandName": "Panasonic"
+    }
+  },
+  {
+    "id": "prod-uuid-002",
+    "sku": "AC-PAN-20T",
+    "productName": "Panasonic 2.0 Ton 3 Star Inverter Split AC",
+    "categoryId": "cat-001",
+    "brandId": "brd-001",
+    "model": "CS/CU-NU24YKY3W",
+    "serialNumber": "PAN-AC-24110",
+    "warrantyMonths": 12,
+    "purchasePrice": 46000,
+    "sellingPrice": 54000,
+    "taxRate": 18,
+    "stockQuantity": 6,
+    "deletedAt": null,
+    "createdAt": "2026-08-01T10:00:00.000Z",
+    "category": {
+      "id": "cat-001",
+      "categoryName": "AC"
+    },
+    "brand": {
+      "id": "brd-001",
+      "brandName": "Panasonic"
+    }
+  },
+  {
+    "id": "prod-uuid-003",
+    "sku": "SRV-GEN-CLN",
+    "productName": "General checking and air filter cleaning work",
+    "categoryId": "cat-006",
+    "brandId": "brd-007",
+    "model": "Service-AC",
+    "serialNumber": null,
+    "warrantyMonths": 1,
+    "purchasePrice": 100,
+    "sellingPrice": 400,
+    "taxRate": 18,
+    "stockQuantity": 999,
+    "deletedAt": null,
+    "createdAt": "2026-08-01T10:00:00.000Z",
+    "category": {
+      "id": "cat-006",
+      "categoryName": "Service"
+    },
+    "brand": {
+      "id": "brd-007",
+      "brandName": "Service"
+    }
+  },
+  {
+    "id": "prod-uuid-004",
+    "sku": "SRV-WTR-WSH",
+    "productName": "Water wash work",
+    "categoryId": "cat-006",
+    "brandId": "brd-007",
+    "model": "Service-AC",
+    "serialNumber": null,
+    "warrantyMonths": 1,
+    "purchasePrice": 300,
+    "sellingPrice": 1500,
+    "taxRate": 18,
+    "stockQuantity": 999,
+    "deletedAt": "2026-08-19T16:01:21.153Z",
+    "createdAt": "2026-08-01T10:00:00.000Z",
+    "category": {
+      "id": "cat-006",
+      "categoryName": "Service"
+    },
+    "brand": {
+      "id": "brd-007",
+      "brandName": "Service"
+    }
+  },
+  {
+    "id": "prod-uuid-005",
+    "sku": "SRV-WRG-PRB",
+    "productName": "Wiring problem repair",
+    "categoryId": "cat-006",
+    "brandId": "brd-007",
+    "model": "Service-AC",
+    "serialNumber": null,
+    "warrantyMonths": 1,
+    "purchasePrice": 150,
+    "sellingPrice": 600,
+    "taxRate": 18,
+    "stockQuantity": 999,
+    "deletedAt": null,
+    "createdAt": "2026-08-01T10:00:00.000Z",
+    "category": {
+      "id": "cat-006",
+      "categoryName": "Service"
+    },
+    "brand": {
+      "id": "brd-007",
+      "brandName": "Service"
+    }
+  },
+  {
+    "id": "prod-uuid-006",
+    "sku": "SP-R32-GAS",
+    "productName": "R32 Eco Refrigerant Gas (1kg)",
+    "categoryId": "cat-005",
+    "brandId": "brd-001",
+    "model": "R32-GAS",
+    "serialNumber": null,
+    "warrantyMonths": 0,
+    "purchasePrice": 1100,
+    "sellingPrice": 1800,
+    "taxRate": 18,
+    "stockQuantity": 3,
+    "deletedAt": null,
+    "createdAt": "2026-08-01T10:00:00.000Z",
+    "category": {
+      "id": "cat-005",
+      "categoryName": "Spare Parts"
+    },
+    "brand": {
+      "id": "brd-001",
+      "brandName": "Panasonic"
+    }
+  }
+]

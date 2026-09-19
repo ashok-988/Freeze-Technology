@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freeze Technology - HVAC Enterprise ERP & Service Management System</title>
+  <meta name="description" content="Panasonic Authorised Air Conditioning & Refrigeration Sales, Service, Job Cards, AMC, Inventory & GST Invoicing ERP System.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="shortcut icon" href="frontend/public/favicon.ico">
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 1. LEFT SIDEBAR NAVIGATION (Doc 2 Specs) -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/logo.png" alt="Freeze Tech Logo" class="sidebar-logo" />
+        <div class="sidebar-title">
+          <h1>FREEZE TECHNOLOGY</h1>
+          <span>PANASONIC AUTHORISED</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-module="dashboard">
+          <i data-lucide="layout-dashboard" class="nav-icon"></i>
+          <span>Dashboard</span>
+        </div>
+
+        <div class="nav-section-title">CRM & Sales</div>
+        <div class="nav-item" data-module="customers">
+          <i data-lucide="users" class="nav-icon"></i>
+          <span>Customers</span>
+        </div>
+        <div class="nav-item" data-module="products">
+          <i data-lucide="package" class="nav-icon"></i>
+          <span>Products Catalog</span>
+        </div>
+        <div class="nav-item" data-module="quotations">
+          <i data-lucide="file-text" class="nav-icon"></i>
+          <span>Quotations</span>
+        </div>
+        <div class="nav-item" data-module="invoices">
+          <i data-lucide="receipt" class="nav-icon"></i>
+          <span>GST Invoices</span>
+        </div>
+
+        <div class="nav-section-title">Operations & Field</div>
+        <div class="nav-item" data-module="services">
+          <i data-lucide="wrench" class="nav-icon"></i>
+          <span>Service & Job Cards</span>
+          <span class="nav-badge">2</span>
+        </div>
+        <div class="nav-item" data-module="technician">
+          <i data-lucide="smartphone" class="nav-icon"></i>
+          <span>Technician Portal</span>
+        </div>
+        <div class="nav-item" data-module="amc">
+          <i data-lucide="shield-check" class="nav-icon"></i>
+          <span>AMC Tracker</span>
+        </div>
+        <div class="nav-item" data-module="installations">
+          <i data-lucide="check-square" class="nav-icon"></i>
+          <span>Installations</span>
+        </div>
+
+        <div class="nav-section-title">Inventory & Procurement</div>
+        <div class="nav-item" data-module="inventory">
+          <i data-lucide="boxes" class="nav-icon"></i>
+          <span>Inventory & Stock</span>
+        </div>
+        <div class="nav-item" data-module="suppliers">
+          <i data-lucide="truck" class="nav-icon"></i>
+          <span>Suppliers</span>
+        </div>
+
+        <div class="nav-section-title">HR & Accounts</div>
+        <div class="nav-item" data-module="employees">
+          <i data-lucide="user-check" class="nav-icon"></i>
+          <span>Employees</span>
+        </div>
+        <div class="nav-item" data-module="attendance">
+          <i data-lucide="clock" class="nav-icon"></i>
+          <span>Attendance</span>
+        </div>
+        <div class="nav-item" data-module="payments">
+          <i data-lucide="credit-card" class="nav-icon"></i>
+          <span>Payments</span>
+        </div>
+        <div class="nav-item" data-module="reports">
+          <i data-lucide="bar-chart-2" class="nav-icon"></i>
+          <span>Reports & GST</span>
+        </div>
+        <div class="nav-item" data-module="settings">
+          <i data-lucide="settings" class="nav-icon"></i>
+          <span>Settings</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar">AK</div>
+        <div class="user-info">
+          <span class="user-name">Ashok Kumar</span>
+          <span class="user-role">Administrator</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 2. MAIN CONTENT WRAPPER -->
+    <main class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <div class="global-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search Invoices, Customers, Job Cards (Ctrl + K)..." id="global-search-input" />
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="quick-action-btn" onclick="renderCurrentModule('invoices')">
+            <i data-lucide="plus-circle"></i> + Invoice
+          </button>
+          
+          <button class="icon-btn" onclick="alert('System Notifications:\n- Low Stock Alert: R32 Gas\n- AMC Expiry Alert: Apex Hospital')" title="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="badge-dot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dynamic Content Area -->
+      <section class="content-area" id="module-content">
+        <!-- Rendered dynamically by app.js -->
+      </section>
+    </main>
+  </div>
+
+  <!-- Dynamic Modal Overlay -->
+  <div class="modal-overlay" id="custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Header</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Dynamic Form / Content -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="modal-save-btn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Invoice Template (Document 1 Exact Layout) -->
+  <div id="printable-invoice"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

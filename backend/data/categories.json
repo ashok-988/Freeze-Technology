@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cat-001",
+    "categoryName": "AC",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "cat-002",
+    "categoryName": "Refrigerator",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "cat-003",
+    "categoryName": "Washing Machine",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "cat-004",
+    "categoryName": "Water Cooler",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "cat-005",
+    "categoryName": "Spare Parts",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  },
+  {
+    "id": "cat-006",
+    "categoryName": "Service",
+    "createdAt": "2026-08-01T10:00:00.000Z"
+  }
+]

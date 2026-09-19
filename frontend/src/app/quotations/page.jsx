@@ -57,6 +57,24 @@ export default function QuotationsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showConvertModal, setShowConvertModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showQuickCustomerModal, setShowQuickCustomerModal] = useState(false);
+
+  // Quick Customer State
+  const [quickCustomerSubmitting, setQuickCustomerSubmitting] = useState(false);
+  const [quickCustomerErrors, setQuickCustomerErrors] = useState({});
+  const [quickCustomerData, setQuickCustomerData] = useState({
+    customerName: '',
+    customerType: 'Commercial',
+    companyName: '',
+    mobile: '',
+    alternateMobile: '',
+    email: '',
+    gstNumber: '',
+    address: '',
+    city: 'Chennai',
+    state: 'Tamil Nadu',
+    pincode: '600097',
+  });
 
   // Selected Quotation for View/Edit/Convert/Delete
   const [activeQuotation, setActiveQuotation] = useState(null);
@@ -77,6 +95,73 @@ export default function QuotationsPage() {
   const showToast = (msg, isError = false) => {
     setToastMessage({ text: msg, isError });
     setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const handleQuickCreateCustomer = async (e) => {
+    e.preventDefault();
+    const errors = {};
+    if (!quickCustomerData.customerName.trim()) {
+      errors.customerName = 'Customer or Company Name is required';
+    }
+    if (!quickCustomerData.mobile.trim() || !/^[0-9]{10}$/.test(quickCustomerData.mobile.trim())) {
+      errors.mobile = 'Enter a valid 10-digit mobile number';
+    }
+    if (!quickCustomerData.address.trim()) {
+      errors.address = 'Street address is required';
+    }
+    if (!quickCustomerData.pincode.trim() || !/^[0-9]{6}$/.test(quickCustomerData.pincode.trim())) {
+      errors.pincode = 'Enter a valid 6-digit pincode';
+    }
+    setQuickCustomerErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setQuickCustomerSubmitting(true);
+    try {
+      const payload = {
+        ...quickCustomerData,
+        companyName: quickCustomerData.companyName || quickCustomerData.customerName,
+      };
+      const res = await customerApi.createCustomer(payload);
+      const newCustomer = res?.data || res;
+      if (res?.success || newCustomer?.id) {
+        showToast('Customer created and selected successfully!');
+
+        // Refresh customer list from DB
+        const updatedCustRes = await customerApi.getCustomers();
+        const updatedList = updatedCustRes?.data || updatedCustRes || [];
+        setCustomers(Array.isArray(updatedList) ? updatedList : []);
+
+        // Auto-select newly created customer in quotation form
+        const createdId = newCustomer?.id || (Array.isArray(updatedList) && updatedList.find((c) => c.mobile === quickCustomerData.mobile)?.id);
+        if (createdId) {
+          setFormData((prev) => ({ ...prev, customerId: createdId }));
+        }
+
+        setShowQuickCustomerModal(false);
+        setQuickCustomerData({
+          customerName: '',
+          customerType: 'Commercial',
+          companyName: '',
+          mobile: '',
+          alternateMobile: '',
+          email: '',
+          gstNumber: '',
+          address: '',
+          city: 'Chennai',
+          state: 'Tamil Nadu',
+          pincode: '600097',
+        });
+        setQuickCustomerErrors({});
+      } else {
+        throw new Error(res?.message || 'Failed to create customer');
+      }
+    } catch (err) {
+      console.error('Quick customer creation failed:', err);
+      const errMsg = err.response?.data?.message || err.message || 'Failed to create customer';
+      showToast(errMsg, true);
+    } finally {
+      setQuickCustomerSubmitting(false);
+    }
   };
 
   const loadData = async () => {
@@ -464,9 +549,8 @@ export default function QuotationsPage() {
       {/* Toast Banner */}
       {toastMessage && (
         <div
-          className={`fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg text-xs font-semibold flex items-center gap-2 ${
-            toastMessage.isError ? 'bg-rose-600 text-white' : 'bg-brand text-white'
-          }`}
+          className={`fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg text-xs font-semibold flex items-center gap-2 ${toastMessage.isError ? 'bg-rose-600 text-white' : 'bg-brand text-white'
+            }`}
         >
           <AlertCircle className="w-4 h-4" />
           {toastMessage.text}
@@ -563,11 +647,10 @@ export default function QuotationsPage() {
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                statusFilter === st
+              className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${statusFilter === st
                   ? 'bg-brand text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+                }`}
             >
               {st}
             </button>
@@ -749,9 +832,21 @@ export default function QuotationsPage() {
               {/* Customer and General Details */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-gray-700 mb-1">
-                    Customer <span className="text-rose-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-semibold text-gray-700">
+                      Customer <span className="text-rose-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickCustomerErrors({});
+                        setShowQuickCustomerModal(true);
+                      }}
+                      className="text-brand hover:text-brand-dark text-xs font-bold flex items-center gap-1 transition"
+                    >
+                      + New Customer
+                    </button>
+                  </div>
                   <select
                     value={formData.customerId}
                     onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
@@ -1266,6 +1361,166 @@ export default function QuotationsPage() {
                 {submitting ? 'Deleting...' : 'Confirm Delete'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* QUICK ADD CUSTOMER MODAL */}
+      {showQuickCustomerModal && (
+        <div className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-brand" />
+                <h3 className="font-bold text-sm text-gray-900">Quick Add New Customer</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowQuickCustomerModal(false)}
+                className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-700 transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleQuickCreateCustomer} className="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2">
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    Customer / Company Name <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Apex Multi Specialty Hospital or Rajesh Kumar"
+                    value={quickCustomerData.customerName}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, customerName: e.target.value })}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${quickCustomerErrors.customerName ? 'border-rose-500' : 'border-gray-300'
+                      }`}
+                  />
+                  {quickCustomerErrors.customerName && (
+                    <span className="text-rose-500 text-[10px] mt-0.5 block">{quickCustomerErrors.customerName}</span>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">Customer Type</label>
+                  <select
+                    value={quickCustomerData.customerType}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, customerType: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-md outline-none focus:border-brand bg-white"
+                  >
+                    <option value="Commercial">Commercial</option>
+                    <option value="Retail">Retail</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    Mobile Number <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    maxLength={10}
+                    placeholder="10-digit mobile"
+                    value={quickCustomerData.mobile}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, mobile: e.target.value })}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${quickCustomerErrors.mobile ? 'border-rose-500' : 'border-gray-300'
+                      }`}
+                  />
+                  {quickCustomerErrors.mobile && (
+                    <span className="text-rose-500 text-[10px] mt-0.5 block">{quickCustomerErrors.mobile}</span>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    placeholder="contact@company.com"
+                    value={quickCustomerData.email}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, email: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-md outline-none focus:border-brand"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">GSTIN</label>
+                  <input
+                    type="text"
+                    maxLength={15}
+                    placeholder="15-digit GST (e.g. 33AAAAA0000A1Z5)"
+                    value={quickCustomerData.gstNumber}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, gstNumber: e.target.value.toUpperCase() })}
+                    className="w-full p-2 border border-gray-300 rounded-md outline-none focus:border-brand uppercase font-mono"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    Address <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Plot/Door No, Street, Area"
+                    value={quickCustomerData.address}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, address: e.target.value })}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${quickCustomerErrors.address ? 'border-rose-500' : 'border-gray-300'
+                      }`}
+                  />
+                  {quickCustomerErrors.address && (
+                    <span className="text-rose-500 text-[10px] mt-0.5 block">{quickCustomerErrors.address}</span>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">City</label>
+                  <input
+                    type="text"
+                    value={quickCustomerData.city}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, city: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-md outline-none focus:border-brand"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    Pincode <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    required
+                    value={quickCustomerData.pincode}
+                    onChange={(e) => setQuickCustomerData({ ...quickCustomerData, pincode: e.target.value })}
+                    className={`w-full p-2 border rounded-md outline-none focus:border-brand ${quickCustomerErrors.pincode ? 'border-rose-500' : 'border-gray-300'
+                      }`}
+                  />
+                  {quickCustomerErrors.pincode && (
+                    <span className="text-rose-500 text-[10px] mt-0.5 block">{quickCustomerErrors.pincode}</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setShowQuickCustomerModal(false)}
+                  disabled={quickCustomerSubmitting}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md font-semibold hover:bg-gray-200 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={quickCustomerSubmitting}
+                  className="px-4 py-2 bg-brand text-white rounded-md font-semibold hover:bg-brand-dark transition disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                >
+                  {quickCustomerSubmitting ? 'Saving Customer...' : 'Save & Select Customer'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

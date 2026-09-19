@@ -311,18 +311,18 @@ export default function QuotationsPage() {
     defaultExpiry.setDate(defaultExpiry.getDate() + 30);
 
     setFormData({
-      customerId: customers[0]?.id || '',
+      customerId: '',
       expiryDate: defaultExpiry.toISOString().split('T')[0],
       discountPercentage: 0,
       status: 'Draft',
       items: [
         {
-          productId: products[0]?.id || '',
+          productId: '',
           quantity: 1,
-          unitPrice: products[0]?.sellingPrice || 0,
+          unitPrice: 0,
           discount: 0,
-          taxAmount: Number((((products[0]?.sellingPrice || 0) * 18) / 100).toFixed(2)),
-          total: Number((((products[0]?.sellingPrice || 0) * 1.18)).toFixed(2)),
+          taxAmount: 0,
+          total: 0,
         },
       ],
     });

@@ -605,7 +605,7 @@ export default function PreventiveMaintenancePage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">Planned Date *</label>
                   <input
@@ -752,7 +752,7 @@ export default function PreventiveMaintenancePage() {
             </div>
 
             <form id="completeFormModal" onSubmit={handleCompleteVisit} className="p-6 overflow-y-auto space-y-4 flex-1 text-xs">
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div><span className="text-slate-400 block">Asset Number:</span> <span className="font-bold text-slate-900">{selectedPm.asset?.assetNumber}</span></div>
                 <div><span className="text-slate-400 block">Customer:</span> <span className="font-bold text-slate-900">{selectedPm.customer?.customerName}</span></div>
               </div>
@@ -760,7 +760,7 @@ export default function PreventiveMaintenancePage() {
               {/* Maintenance Inspection Checklist */}
               <div>
                 <label className="block font-bold text-slate-900 mb-2">Service Inspection Checklist</label>
-                <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"

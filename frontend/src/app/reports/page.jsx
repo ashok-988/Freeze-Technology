@@ -477,7 +477,7 @@ export default function ReportsPage() {
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
         {/* Executive KPI Cards Grid (8 Cards) */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+        <section className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3">
           {/* Revenue */}
           <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-slate-300 transition">
             <div className="flex items-center justify-between">
@@ -961,7 +961,7 @@ export default function ReportsPage() {
             </div>
 
             {/* Aging Buckets Banner */}
-            <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
                 <span className="text-slate-500">Total Due:</span>
                 <div className="font-bold text-rose-700 text-sm mt-0.5">
@@ -1218,7 +1218,7 @@ export default function ReportsPage() {
             </div>
 
             {/* Summary */}
-            <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
                 <span className="text-slate-500">Total Payables:</span>
                 <div className="font-bold text-rose-700 text-sm mt-0.5">

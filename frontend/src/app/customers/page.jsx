@@ -424,19 +424,19 @@ export default function CustomersPage() {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold border-b border-gray-200">
-                  <th className="p-3.5">Customer Code</th>
+                  <th className="p-3.5 whitespace-nowrap">Customer Code</th>
                   <th className="p-3.5">Name / Company</th>
-                  <th className="p-3.5">Type</th>
-                  <th className="p-3.5">Mobile Contact</th>
-                  <th className="p-3.5">GSTIN</th>
+                  <th className="p-3.5 whitespace-nowrap">Type</th>
+                  <th className="p-3.5 whitespace-nowrap">Mobile Contact</th>
+                  <th className="p-3.5 whitespace-nowrap">GSTIN</th>
                   <th className="p-3.5">Location</th>
-                  <th className="p-3.5 text-right">Actions</th>
+                  <th className="p-3.5 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {customers.map((c) => (
                   <tr key={c.id} className="hover:bg-gray-50/70 transition">
-                    <td className="p-3.5 font-bold text-brand">
+                    <td className="p-3.5 font-bold text-brand whitespace-nowrap">
                       {c.customerCode || 'CUST-000'}
                     </td>
                     <td className="p-3.5">
@@ -445,7 +445,7 @@ export default function CustomersPage() {
                         <div className="text-[11px] text-gray-400">{c.companyName}</div>
                       )}
                     </td>
-                    <td className="p-3.5">
+                    <td className="p-3.5 whitespace-nowrap">
                       <span
                         className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] ${c.customerType === 'Commercial'
                             ? 'bg-purple-100 text-purple-800'
@@ -455,40 +455,42 @@ export default function CustomersPage() {
                         {c.customerType}
                       </span>
                     </td>
-                    <td className="p-3.5">
+                    <td className="p-3.5 whitespace-nowrap">
                       <div className="font-medium text-gray-800">{c.mobile}</div>
                       {c.email && (
                         <div className="text-[11px] text-gray-400">{c.email}</div>
                       )}
                     </td>
-                    <td className="p-3.5 font-mono text-[11px] text-gray-700">
+                    <td className="p-3.5 font-mono text-[11px] text-gray-700 whitespace-nowrap">
                       {c.gstNumber || <span className="text-gray-400 font-sans">N/A</span>}
                     </td>
                     <td className="p-3.5 text-gray-600 max-w-[220px] truncate" title={c.address}>
                       {c.address}, {c.city || 'Chennai'}
                     </td>
-                    <td className="p-3.5 text-right space-x-1">
-                      <button
-                        onClick={() => openDetailModal(c)}
-                        title="View Profile & History"
-                        className="p-1 text-gray-600 hover:text-brand hover:bg-emerald-50 rounded transition"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openEditModal(c)}
-                        title="Edit Customer"
-                        className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(c)}
-                        title="Archive Customer"
-                        className="p-1 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <td className="p-3.5 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => openDetailModal(c)}
+                          title="View Profile & History"
+                          className="p-1.5 text-gray-500 hover:text-brand hover:bg-brand/10 rounded transition"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openEditModal(c)}
+                          title="Edit Customer"
+                          className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(c)}
+                          title="Archive Customer"
+                          className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -892,79 +892,81 @@ export default function QuotationsPage() {
                   </button>
                 </div>
 
-                <div className="p-3 space-y-3">
-                  {formData.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="grid grid-cols-12 gap-2 items-center bg-gray-50/70 p-2.5 rounded border border-gray-200"
-                    >
-                      <div className="col-span-1 text-center font-bold text-gray-500">
-                        #{idx + 1}
-                      </div>
+                <div className="p-3 overflow-x-auto">
+                  <div className="min-w-[640px] space-y-3">
+                    {formData.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="grid grid-cols-12 gap-2 items-center bg-gray-50/70 p-2.5 rounded border border-gray-200"
+                      >
+                        <div className="col-span-1 text-center font-bold text-gray-500">
+                          #{idx + 1}
+                        </div>
 
-                      <div className="col-span-4">
-                        <label className="block text-[10px] text-gray-500 mb-0.5">Product</label>
-                        <select
-                          value={item.productId}
-                          onChange={(e) => handleProductChange(idx, e.target.value)}
-                          required
-                          className="w-full p-1.5 border border-gray-300 rounded text-xs bg-white"
-                        >
-                          <option value="">-- Select Product --</option>
-                          {products.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.sku} - {p.productName} (₹{p.sellingPrice})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        <div className="col-span-4">
+                          <label className="block text-[10px] text-gray-500 mb-0.5">Product</label>
+                          <select
+                            value={item.productId}
+                            onChange={(e) => handleProductChange(idx, e.target.value)}
+                            required
+                            className="w-full p-1.5 border border-gray-300 rounded text-xs bg-white"
+                          >
+                            <option value="">-- Select Product --</option>
+                            {products.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.sku} - {p.productName} (₹{p.sellingPrice})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
 
-                      <div className="col-span-2">
-                        <label className="block text-[10px] text-gray-500 mb-0.5">Qty</label>
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleItemFieldChange(idx, 'quantity', e.target.value)}
-                          required
-                          className="w-full p-1.5 border border-gray-300 rounded text-xs"
-                        />
-                      </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] text-gray-500 mb-0.5">Qty</label>
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            onChange={(e) => handleItemFieldChange(idx, 'quantity', e.target.value)}
+                            required
+                            className="w-full p-1.5 border border-gray-300 rounded text-xs"
+                          />
+                        </div>
 
-                      <div className="col-span-2">
-                        <label className="block text-[10px] text-gray-500 mb-0.5">Unit Rate (₹)</label>
-                        <input
-                          type="number"
-                          min="0"
-                          step="any"
-                          value={item.unitPrice}
-                          onChange={(e) => handleItemFieldChange(idx, 'unitPrice', e.target.value)}
-                          required
-                          className="w-full p-1.5 border border-gray-300 rounded text-xs"
-                        />
-                      </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] text-gray-500 mb-0.5">Unit Rate (₹)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="any"
+                            value={item.unitPrice}
+                            onChange={(e) => handleItemFieldChange(idx, 'unitPrice', e.target.value)}
+                            required
+                            className="w-full p-1.5 border border-gray-300 rounded text-xs"
+                          />
+                        </div>
 
-                      <div className="col-span-2 text-right">
-                        <label className="block text-[10px] text-gray-500 mb-0.5">
-                          Line Total (inc. 18% GST)
-                        </label>
-                        <div className="font-bold text-gray-900 py-1.5">
-                          ₹{item.total?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        <div className="col-span-2 text-right">
+                          <label className="block text-[10px] text-gray-500 mb-0.5">
+                            Line Total (inc. 18% GST)
+                          </label>
+                          <div className="font-bold text-gray-900 py-1.5">
+                            ₹{item.total?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          </div>
+                        </div>
+
+                        <div className="col-span-1 text-center">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem(idx)}
+                            className="text-gray-400 hover:text-rose-600 p-1 rounded"
+                            title="Remove Line Item"
+                          >
+                            <Trash2 className="w-4 h-4 mx-auto" />
+                          </button>
                         </div>
                       </div>
-
-                      <div className="col-span-1 text-center">
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveItem(idx)}
-                          className="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded"
-                          title="Remove item"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
 

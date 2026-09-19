@@ -720,7 +720,7 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="font-semibold text-gray-700 block mb-1">Stock Quantity</label>
                   <input
@@ -876,7 +876,7 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="font-semibold text-gray-700 block mb-1">Stock Units</label>
                   <input

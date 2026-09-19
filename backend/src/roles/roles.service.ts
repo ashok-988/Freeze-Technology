@@ -245,22 +245,33 @@ export class RolesService implements OnModuleInit {
       // 2. Upsert default system roles
       for (const r of SYSTEM_ROLES_DEFAULT) {
         try {
-          const role = await this.prisma.role.upsert({
-            where: { roleName: r.roleName },
-            update: {
-              code: r.code,
-              description: r.description,
-              isSystemRole: true,
-              isActive: true,
-            },
-            create: {
-              roleName: r.roleName,
-              code: r.code,
-              description: r.description,
-              isSystemRole: true,
-              isActive: true,
-            },
+          const existingRole = await this.prisma.role.findFirst({
+            where: { OR: [{ roleName: r.roleName }, { code: r.code }] },
           });
+
+          let role;
+          if (existingRole) {
+            role = await this.prisma.role.update({
+              where: { id: existingRole.id },
+              data: {
+                roleName: r.roleName,
+                code: r.code,
+                description: r.description,
+                isSystemRole: true,
+                isActive: true,
+              },
+            });
+          } else {
+            role = await this.prisma.role.create({
+              data: {
+                roleName: r.roleName,
+                code: r.code,
+                description: r.description,
+                isSystemRole: true,
+                isActive: true,
+              },
+            });
+          }
 
           // Map role permissions
           let targetCodes: string[] = [];

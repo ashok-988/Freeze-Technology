@@ -730,7 +730,7 @@ export default function InstallationsPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">Assigned Technician</label>
                   <select
@@ -951,7 +951,7 @@ export default function InstallationsPage() {
             </div>
 
             <form onSubmit={handleCompleteSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">Commissioning Date</label>
                   <input
@@ -1046,7 +1046,7 @@ export default function InstallationsPage() {
             </div>
 
             <div className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-4 bg-gray-50 p-3.5 rounded-md border border-gray-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-3.5 rounded-md border border-gray-200">
                 <div>
                   <span className="text-gray-500 block text-[10px] uppercase font-semibold">Customer Details</span>
                   <span className="font-bold text-gray-900 text-sm">

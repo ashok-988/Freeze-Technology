@@ -1,5 +1,5 @@
 import './globals.css';
-import Sidebar from '../components/Sidebar';
+import AppShell from '../components/AppShell';
 
 export const metadata = {
   title: 'Freeze Technology ERP - Panasonic Authorised Sales & Service',
@@ -19,26 +19,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-canvas text-gray-900 min-h-screen flex antialiased">
-        {/* Left Sidebar Navigation */}
-        <Sidebar />
-
-        {/* Main Workspace */}
-        <div className="ml-64 flex-1 flex flex-col min-w-0">
-          <header className="h-16 bg-white border-b border-gray-200 sticky top-0 z-40 px-6 flex items-center justify-between">
-            <div className="w-80 relative">
-              <input
-                type="text"
-                placeholder="Search Invoices, Customers, Job Cards..."
-                className="w-full pl-4 pr-4 py-1.5 bg-canvas border border-gray-200 rounded-full text-xs outline-none focus:border-brand transition"
-              />
-            </div>
-          </header>
-
-          <main className="p-6 flex-1">
-            {children}
-          </main>
-        </div>
+      <body>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

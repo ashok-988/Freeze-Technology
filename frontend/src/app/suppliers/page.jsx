@@ -1001,7 +1001,7 @@ export default function SuppliersPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">Contact Person <span className="text-rose-500">*</span></label>
                   <input
@@ -1026,7 +1026,7 @@ export default function SuppliersPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">Email Address</label>
                   <input
@@ -1061,7 +1061,7 @@ export default function SuppliersPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">City</label>
                   <input
@@ -1189,16 +1189,17 @@ export default function SuppliersPage() {
                   </button>
                 </div>
 
-                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                  {(Array.isArray(poFormData.items) ? poFormData.items : []).map((item, idx) => {
-                    const prod = Array.isArray(products) ? products.find((p) => p.id === item.productId) : null;
-                    const lineSub = (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0);
-                    const taxRate = prod?.taxRate || 18;
-                    const lineTax = (lineSub * taxRate) / 100;
-                    const lineTotal = lineSub + lineTax;
+                <div className="overflow-x-auto">
+                  <div className="space-y-2 max-h-60 overflow-y-auto pr-1 min-w-[540px]">
+                    {(Array.isArray(poFormData.items) ? poFormData.items : []).map((item, idx) => {
+                      const prod = Array.isArray(products) ? products.find((p) => p.id === item.productId) : null;
+                      const lineSub = (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0);
+                      const taxRate = prod?.taxRate || 18;
+                      const lineTax = (lineSub * taxRate) / 100;
+                      const lineTotal = lineSub + lineTax;
 
-                    return (
-                      <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white p-2.5 rounded border border-gray-200 shadow-sm">
+                      return (
+                        <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white p-2.5 rounded border border-gray-200 shadow-sm">
                         <div className="col-span-5">
                           <label className="block text-[10px] text-gray-500">Product / SKU</label>
                           <select
@@ -1255,7 +1256,8 @@ export default function SuppliersPage() {
                         </div>
                       </div>
                     );
-                  })}
+                    })}
+                  </div>
                 </div>
 
                 {/* Calculation Summary */}

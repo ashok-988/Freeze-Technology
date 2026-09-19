@@ -292,12 +292,32 @@ export class CustomersService {
 
   private async generateNextCustomerCode(): Promise<string> {
     try {
-      const count = await this.prisma.customer.count();
-      const nextNum = (count + 1).toString().padStart(3, '0');
+      const customers = await this.prisma.customer.findMany({
+        select: { customerCode: true },
+      });
+
+      let maxNum = 0;
+      for (const c of customers) {
+        const match = (c.customerCode || '').match(/CUST-(\d+)/i);
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (num > maxNum) maxNum = num;
+        }
+      }
+
+      const nextNum = (maxNum + 1).toString().padStart(3, '0');
       return `CUST-${nextNum}`;
     } catch {
       this.loadFallbackData();
-      const nextNum = (this.fallbackCustomers.length + 1).toString().padStart(3, '0');
+      let maxNum = 0;
+      for (const c of this.fallbackCustomers) {
+        const match = (c.customerCode || '').match(/CUST-(\d+)/i);
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (num > maxNum) maxNum = num;
+        }
+      }
+      const nextNum = (maxNum + 1).toString().padStart(3, '0');
       return `CUST-${nextNum}`;
     }
   }

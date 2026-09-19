@@ -500,16 +500,34 @@ export class QuotationsService {
 
   private async generateQuotationNumber(): Promise<string> {
     const year = new Date().getFullYear();
-    const count = await this.prisma.quotation.count();
-    const nextSeq = (count + 1).toString().padStart(4, '0');
-    return `QT-${year}-${nextSeq}`;
+    const prefix = `QT-${year}-`;
+    const last = await this.prisma.quotation.findFirst({
+      where: { quotationNumber: { startsWith: prefix } },
+      orderBy: { quotationNumber: 'desc' },
+      select: { quotationNumber: true },
+    });
+    if (!last || !last.quotationNumber) {
+      return `${prefix}0001`;
+    }
+    const match = last.quotationNumber.match(/QT-\d+-(\d+)/i);
+    const seq = match && match[1] ? parseInt(match[1], 10) + 1 : 1;
+    return `${prefix}${String(seq).padStart(4, '0')}`;
   }
 
   private async generateInvoiceNumber(): Promise<string> {
     const year = new Date().getFullYear();
-    const count = await this.prisma.invoice.count();
-    const nextSeq = (count + 1).toString().padStart(4, '0');
-    return `FT/${year}/${nextSeq}`;
+    const prefix = `FT/${year}/`;
+    const last = await this.prisma.invoice.findFirst({
+      where: { invoiceNumber: { startsWith: prefix } },
+      orderBy: { invoiceNumber: 'desc' },
+      select: { invoiceNumber: true },
+    });
+    if (!last || !last.invoiceNumber) {
+      return `${prefix}0001`;
+    }
+    const match = last.invoiceNumber.match(/FT\/\d+\/(\d+)/i);
+    const seq = match && match[1] ? parseInt(match[1], 10) + 1 : 1;
+    return `${prefix}${String(seq).padStart(4, '0')}`;
   }
 
   private async resolveUserId(userId?: string): Promise<string> {

@@ -391,12 +391,33 @@ export class ProductsService {
     }
 
     try {
-      const count = await this.prisma.product.count();
-      const num = (count + 1).toString().padStart(3, '0');
+      const products = await this.prisma.product.findMany({
+        where: { sku: { startsWith: `${prefix}-` } },
+        select: { sku: true },
+      });
+
+      let maxNum = 0;
+      for (const p of products) {
+        const match = (p.sku || '').match(new RegExp(`^${prefix}-(\\d+)`, 'i'));
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (num > maxNum) maxNum = num;
+        }
+      }
+
+      const num = (maxNum + 1).toString().padStart(3, '0');
       return `${prefix}-${num}`;
     } catch {
       this.loadData();
-      const num = (this.fallbackProducts.length + 1).toString().padStart(3, '0');
+      let maxNum = 0;
+      for (const p of this.fallbackProducts) {
+        const match = (p.sku || '').match(new RegExp(`^${prefix}-(\\d+)`, 'i'));
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (num > maxNum) maxNum = num;
+        }
+      }
+      const num = (maxNum + 1).toString().padStart(3, '0');
       return `${prefix}-${num}`;
     }
   }

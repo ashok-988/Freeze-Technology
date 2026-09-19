@@ -1,5 +1,22 @@
 [
   {
+    "id": "cust-uuid-1789828169873",
+    "customerCode": "CUST-009",
+    "customerName": "JJ Textiles",
+    "companyName": "JJ Textiles",
+    "customerType": "Commercial",
+    "mobile": "8870607057",
+    "alternateMobile": null,
+    "email": null,
+    "gstNumber": null,
+    "address": "Tambaram",
+    "city": "Chennai",
+    "state": "Tamil Nadu",
+    "pincode": "600097",
+    "deletedAt": null,
+    "createdAt": "2026-09-19T14:29:29.873Z"
+  },
+  {
     "id": "cust-uuid-1789827148736",
     "customerCode": "CUST-009",
     "customerName": "JJ Textiles",

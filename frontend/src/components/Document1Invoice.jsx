@@ -1,21 +1,15 @@
 import React from 'react';
 
 export default function Document1Invoice({ invoice }) {
-  const defaultInvoice = {
-    invoiceNo: 'FT/2026/0713',
-    date: '13/07/2026',
-    customerName: 'M/s. Mebacare Naturals Salon',
-    customerAddress: 'No.25/3 East Mada Street, Thiruvanmiyur, Chennai 600041.',
+  const data = invoice || {
+    invoiceNo: '—',
+    date: new Date().toLocaleDateString('en-GB'),
+    customerName: '—',
+    customerAddress: '—',
     customerGstin: '',
-    items: [
-      { sn: 1, description: 'General checking and air filter cleaning work', qty: 1, gst: '18%', rate: 400, amount: 400.00 },
-      { sn: 2, description: 'Water wash work', qty: 4, gst: '18%', rate: 1500, amount: 6000.00 },
-      { sn: 3, description: 'Wiring problem', qty: 1, gst: '18%', rate: 600, amount: 600.00 }
-    ],
-    grandTotal: 7000.00
+    items: [],
+    grandTotal: 0,
   };
-
-  const data = invoice || defaultInvoice;
 
   return (
     <div id="printable-invoice" className="bg-white p-8 max-w-[800px] mx-auto text-black font-sans">

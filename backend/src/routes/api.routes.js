@@ -4,35 +4,12 @@ const { authenticateToken, requireRole } = require('../middleware/auth');
 const { generateInvoicePDF } = require('../services/pdfService');
 const { generateSalesExcelReport } = require('../services/excelService');
 
-// Mock in-memory database fallback for seamless server execution
+// In-memory store initialized with empty arrays
 const mockStore = {
-  invoices: [
-    {
-      id: 'INV-2026-0713',
-      invoiceNo: 'FT/2026/0713',
-      date: '13/07/2026',
-      customerName: 'M/s. Mebacare Naturals Salon',
-      customerAddress: 'No.25/3 East Mada Street, Thiruvanmiyur, Chennai 600041.',
-      customerGstin: '',
-      items: [
-        { sn: 1, description: 'General checking and air filter cleaning work', qty: 1, gst: '18%', rate: 400, amount: 400.00 },
-        { sn: 2, description: 'Water wash work', qty: 4, gst: '18%', rate: 1500, amount: 6000.00 },
-        { sn: 3, description: 'Wiring problem', qty: 1, gst: '18%', rate: 600, amount: 600.00 }
-      ],
-      grandTotal: 7000.00,
-      paymentStatus: 'Paid',
-      paymentMethod: 'UPI'
-    }
-  ],
-  customers: [
-    { id: 'CUST-001', name: 'M/s. Mebacare Naturals Salon', type: 'Commercial', mobile: '9840123456', gstin: '33AAACM1234F1Z5', address: 'No.25/3 East Mada Street, Thiruvanmiyur' }
-  ],
-  products: [
-    { id: 'PROD-001', sku: 'AC-PAN-15T', name: 'Panasonic 1.5 Ton 5 Star Inverter Split AC', category: 'AC', sellingPrice: 42500, stockQuantity: 14 }
-  ],
-  jobCards: [
-    { id: 'JOB-042', jobNumber: 'JC-9042', customerName: 'M/s. Mebacare Naturals Salon', product: 'Panasonic 1.5T AC', complaint: 'Cooling insufficient', technicianName: 'Suresh V', priority: 'High', status: 'In Progress' }
-  ]
+  invoices: [],
+  customers: [],
+  products: [],
+  jobCards: []
 };
 
 // 1. AUTH ROUTES

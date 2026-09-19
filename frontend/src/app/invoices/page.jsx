@@ -19,24 +19,6 @@ export default function InvoicesPage() {
   const [submittingPay, setSubmittingPay] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  const defaultSampleInvoice = {
-    invoiceNo: 'FT/2026/0713',
-    date: '13/07/2026',
-    customerName: 'M/s. Mebacare Naturals Salon',
-    customerAddress: 'No.25/3 East Mada Street, Thiruvanmiyur, Chennai 600041.',
-    customerGstin: '',
-    items: [
-      { sn: 1, description: 'General checking and air filter cleaning work', qty: 1, gst: '18%', rate: 400, amount: 400.00 },
-      { sn: 2, description: 'Water wash work', qty: 4, gst: '18%', rate: 1500, amount: 6000.00 },
-      { sn: 3, description: 'Wiring problem', qty: 1, gst: '18%', rate: 600, amount: 600.00 }
-    ],
-    grandTotal: 7000.00,
-    paidAmount: 7000.00,
-    outstanding: 0.00,
-    paymentStatus: 'Paid',
-    paymentMethod: 'UPI'
-  };
-
   const showToast = (text, isError = false) => {
     setToastMessage({ text, isError });
     setTimeout(() => setToastMessage(null), 4000);
@@ -46,7 +28,7 @@ export default function InvoicesPage() {
     try {
       setLoading(true);
       const res = await invoiceApi.getInvoices();
-      if (res?.success && res.data?.length > 0) {
+      if (res?.success && Array.isArray(res.data)) {
         const formatted = res.data.map((inv) => {
           const totalPaid = (inv.payments || []).reduce((sum, p) => sum + (p.amount || 0), 0);
           const outstanding = Math.max(0, (inv.grandTotal || 0) - totalPaid);
@@ -54,18 +36,18 @@ export default function InvoicesPage() {
           return {
             id: inv.id,
             invoiceNo: inv.invoiceNumber || inv.invoiceNo || 'FT/2026/0001',
-            date: inv.invoiceDate ? new Date(inv.invoiceDate).toLocaleDateString('en-GB') : (inv.date || '13/07/2026'),
+            date: inv.invoiceDate ? new Date(inv.invoiceDate).toLocaleDateString('en-GB') : (inv.date || new Date().toLocaleDateString('en-GB')),
             customerName: inv.customer?.companyName || inv.customer?.customerName || inv.customerName || 'Customer',
-            customerAddress: inv.customer ? `${inv.customer.address}\n${inv.customer.city || 'Chennai'} ${inv.customer.pincode || ''}` : (inv.customerAddress || ''),
+            customerAddress: inv.customer ? `${inv.customer.address || ''}\n${inv.customer.city || 'Chennai'} ${inv.customer.pincode || ''}` : (inv.customerAddress || ''),
             customerGstin: inv.customer?.gstNumber || inv.customerGstin || '',
-            items: inv.items ? inv.items.map((it, idx) => ({
+            items: (inv.items || []).map((it, idx) => ({
               sn: idx + 1,
               description: it.description || 'Product Item',
               qty: it.quantity || 1,
               gst: '18%',
               rate: it.sellingPrice || it.rate || 0,
               amount: (it.sellingPrice || it.rate || 0) * (it.quantity || 1)
-            })) : (inv.items || defaultSampleInvoice.items),
+            })),
             grandTotal: inv.grandTotal || 0,
             paidAmount: totalPaid,
             outstanding: Number(outstanding.toFixed(2)),
@@ -77,11 +59,11 @@ export default function InvoicesPage() {
         });
         setInvoices(formatted);
       } else {
-        setInvoices([defaultSampleInvoice]);
+        setInvoices([]);
       }
     } catch (err) {
       console.error('Failed to load invoices:', err);
-      setInvoices([defaultSampleInvoice]);
+      setInvoices([]);
     } finally {
       setLoading(false);
     }
@@ -97,7 +79,8 @@ export default function InvoicesPage() {
   };
 
   const handleDownloadPdf = (inv) => {
-    window.open(`http://localhost:5000/api/invoices/${inv.id || inv.invoiceNo}/pdf`, '_blank');
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    window.open(`${apiBase}/invoices/${inv.id || inv.invoiceNo}/pdf`, '_blank');
   };
 
   const openPayModal = (inv) => {
@@ -175,6 +158,12 @@ export default function InvoicesPage() {
       <div className="bg-white border border-gray-200 rounded-card p-5 shadow-sm">
         {loading ? (
           <div className="p-8 text-center text-xs text-gray-500">Loading invoices from PostgreSQL...</div>
+        ) : invoices.length === 0 ? (
+          <div className="p-12 text-center">
+            <FileText className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+            <div className="text-sm font-bold text-gray-700">No Invoices Found</div>
+            <p className="text-xs text-gray-500 mt-1">Create an invoice or convert an approved quotation to generate GST invoices.</p>
+          </div>
         ) : (
           <table className="w-full text-left text-xs border-collapse">
             <thead>

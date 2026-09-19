@@ -90,15 +90,15 @@ function generateInvoicePDF(invoiceData, resStream) {
 
   // Customer Address Left
   doc.fontSize(9).font('Helvetica-Bold').text('To:', 40, 130);
-  doc.fontSize(9).font('Helvetica-Bold').text(invoiceData.customerName || 'M/s. Mebacare Naturals Salon', 65, 130);
-  doc.fontSize(8).font('Helvetica').text(invoiceData.customerAddress || 'No.25/3 East Mada Street,\nThiruvanmiyur, Chennai 600041.', 65, 145);
+  doc.fontSize(9).font('Helvetica-Bold').text(invoiceData.customerName || '', 65, 130);
+  doc.fontSize(8).font('Helvetica').text(invoiceData.customerAddress || '', 65, 145);
 
   // Invoice Meta Right
   doc.fontSize(9).font('Helvetica-Bold').text('Invoice No   :', 310, 130);
-  doc.font('Helvetica').text(invoiceData.invoiceNo || 'FT/2026/0713', 380, 130);
+  doc.font('Helvetica').text(invoiceData.invoiceNo || '', 380, 130);
 
   doc.font('Helvetica-Bold').text('Date            :', 310, 145);
-  doc.font('Helvetica').text(invoiceData.date || '13/07/2026', 380, 145);
+  doc.font('Helvetica').text(invoiceData.date || '', 380, 145);
 
   doc.font('Helvetica-Bold').text('Customer GSTIN :', 310, 160);
   doc.font('Helvetica').text(invoiceData.customerGstin || '', 400, 160);
@@ -116,21 +116,17 @@ function generateInvoicePDF(invoiceData, resStream) {
 
   // Table Rows
   let y = tableTop + 20;
-  const items = invoiceData.items || [
-    { sn: 1, description: 'General checking and air filter cleaning work', qty: 1, gst: '18%', rate: 400, amount: 400.00 },
-    { sn: 2, description: 'Water wash work', qty: 4, gst: '18%', rate: 1500, amount: 6000.00 },
-    { sn: 3, description: 'Wiring problem', qty: 1, gst: '18%', rate: 600, amount: 600.00 }
-  ];
+  const items = invoiceData.items || [];
 
   items.forEach(item => {
     doc.rect(30, y, 535, 22).stroke('#000000');
     doc.fontSize(8.5).font('Helvetica');
-    doc.text(item.sn.toString(), 35, y + 6, { width: 30, align: 'center' });
-    doc.text(item.description, 70, y + 6, { width: 250 });
-    doc.text(item.qty.toString(), 320, y + 6, { width: 40, align: 'center' });
-    doc.text(item.gst, 370, y + 6, { width: 40, align: 'center' });
-    doc.text(item.rate.toLocaleString('en-IN'), 420, y + 6, { width: 60, align: 'right' });
-    doc.text(item.amount.toFixed(2), 490, y + 6, { width: 65, align: 'right' });
+    doc.text((item.sn || '').toString(), 35, y + 6, { width: 30, align: 'center' });
+    doc.text(item.description || '', 70, y + 6, { width: 250 });
+    doc.text((item.qty || 1).toString(), 320, y + 6, { width: 40, align: 'center' });
+    doc.text(item.gst || '18%', 370, y + 6, { width: 40, align: 'center' });
+    doc.text((item.rate || 0).toLocaleString('en-IN'), 420, y + 6, { width: 60, align: 'right' });
+    doc.text((item.amount || 0).toFixed(2), 490, y + 6, { width: 65, align: 'right' });
     y += 22;
   });
 
@@ -139,7 +135,7 @@ function generateInvoicePDF(invoiceData, resStream) {
   doc.fontSize(9).font('Helvetica-Bold');
   doc.text('GST 18% EXTRA', 200, y + 6);
   doc.text('Grand Total', 410, y + 6);
-  doc.text((invoiceData.grandTotal || 7000.00).toFixed(2), 490, y + 6, { width: 65, align: 'right' });
+  doc.text((invoiceData.grandTotal || 0).toFixed(2), 490, y + 6, { width: 65, align: 'right' });
 
   y += 40;
 

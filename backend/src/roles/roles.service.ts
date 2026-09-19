@@ -322,17 +322,22 @@ export class RolesService implements OnModuleInit {
         }
       }
 
-      // Also ensure legacy role 'Admin' is updated
-      const legacyAdmin = await this.prisma.role.findUnique({ where: { roleName: 'Admin' } });
-      if (legacyAdmin && !legacyAdmin.code) {
-        await this.prisma.role.update({
-          where: { id: legacyAdmin.id },
-          data: {
-            code: 'ADMIN',
-            isSystemRole: true,
-          },
-        });
-      }
+      // Also ensure legacy role 'Admin' is updated safely
+      try {
+        const legacyAdmin = await this.prisma.role.findUnique({ where: { roleName: 'Admin' } });
+        if (legacyAdmin && !legacyAdmin.code) {
+          const existingCode = await this.prisma.role.findUnique({ where: { code: 'ADMIN' } });
+          if (!existingCode) {
+            await this.prisma.role.update({
+              where: { id: legacyAdmin.id },
+              data: {
+                code: 'ADMIN',
+                isSystemRole: true,
+              },
+            });
+          }
+        }
+      } catch {}
 
       this.logger.log('RBAC default roles and permissions verified successfully.');
     } catch (err) {

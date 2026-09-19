@@ -686,21 +686,19 @@ export default function QuotationsPage() {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 uppercase text-[10px] border-b">
-                  <th className="p-3">Quotation #</th>
-                  <th className="p-3">Date / Expiry</th>
+                  <th className="p-3 whitespace-nowrap">Quotation #</th>
+                  <th className="p-3 whitespace-nowrap">Date / Expiry</th>
                   <th className="p-3">Customer</th>
                   <th className="p-3">Items Summary</th>
-                  <th className="p-3 text-right">Subtotal</th>
-                  <th className="p-3 text-right">GST (18%)</th>
-                  <th className="p-3 text-right">Grand Total</th>
-                  <th className="p-3 text-center">Status</th>
-                  <th className="p-3 text-right">Actions</th>
+                  <th className="p-3 text-right whitespace-nowrap">Grand Total</th>
+                  <th className="p-3 text-center whitespace-nowrap">Status</th>
+                  <th className="p-3 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredQuotations.map((quot) => (
                   <tr key={quot.id} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="p-3 font-bold text-brand">
+                    <td className="p-3 font-bold text-brand whitespace-nowrap">
                       <button
                         onClick={() => openDetail(quot)}
                         className="hover:underline flex items-center gap-1"
@@ -713,7 +711,7 @@ export default function QuotationsPage() {
                         </div>
                       )}
                     </td>
-                    <td className="p-3">
+                    <td className="p-3 whitespace-nowrap">
                       <div>{new Date(quot.quotationDate).toLocaleDateString('en-GB')}</div>
                       <div className="text-[10px] text-gray-400">
                         Exp: {new Date(quot.expiryDate).toLocaleDateString('en-GB')}
@@ -723,8 +721,8 @@ export default function QuotationsPage() {
                       <div className="font-semibold text-gray-900">
                         {quot.customer?.companyName || quot.customer?.customerName}
                       </div>
-                      <div className="text-[10px] text-gray-500 flex items-center gap-2 mt-0.5">
-                        <span>{quot.customer?.customerCode}</span>
+                      <div className="text-[10px] text-gray-500 flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
+                        <span className="font-medium text-gray-600">{quot.customer?.customerCode}</span>
                         <span>•</span>
                         <span>{quot.customer?.mobile}</span>
                       </div>
@@ -733,23 +731,17 @@ export default function QuotationsPage() {
                       <div className="font-medium text-gray-800">
                         {quot.items?.length || 0} {quot.items?.length === 1 ? 'item' : 'items'}
                       </div>
-                      <div className="text-[10px] text-gray-500 truncate max-w-[160px]">
+                      <div className="text-[10px] text-gray-500 truncate max-w-[220px]">
                         {quot.items?.[0]?.product?.productName || 'Line items'}
                       </div>
                     </td>
-                    <td className="p-3 text-right font-medium text-gray-600">
-                      ₹{quot.subtotal?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="p-3 text-right font-medium text-gray-600">
-                      ₹{quot.gstAmount?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="p-3 text-right font-bold text-gray-900">
+                    <td className="p-3 text-right font-bold text-gray-900 whitespace-nowrap">
                       ₹{quot.grandTotal?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
-                    <td className="p-3 text-center">
+                    <td className="p-3 text-center whitespace-nowrap">
                       {getStatusBadge(quot.status, quot.invoice)}
                     </td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => openDetail(quot)}

@@ -168,30 +168,30 @@ export default function InvoicesPage() {
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 uppercase text-[10px]">
-                <th className="p-3 border-b">Invoice Number</th>
-                <th className="p-3 border-b">Date</th>
+                <th className="p-3 border-b whitespace-nowrap">Invoice Number</th>
+                <th className="p-3 border-b whitespace-nowrap">Date</th>
                 <th className="p-3 border-b">Customer Name</th>
-                <th className="p-3 border-b text-right">Grand Total</th>
-                <th className="p-3 border-b text-right">Paid</th>
-                <th className="p-3 border-b text-right">Outstanding</th>
-                <th className="p-3 border-b text-center">Payment Status</th>
-                <th className="p-3 border-b text-right">Actions</th>
+                <th className="p-3 border-b text-right whitespace-nowrap">Grand Total</th>
+                <th className="p-3 border-b text-right whitespace-nowrap">Paid</th>
+                <th className="p-3 border-b text-right whitespace-nowrap">Outstanding</th>
+                <th className="p-3 border-b text-center whitespace-nowrap">Payment Status</th>
+                <th className="p-3 border-b text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {invoices.map((inv, idx) => (
                 <tr key={inv.id || idx} className="hover:bg-gray-50/70 transition-colors">
-                  <td className="p-3 font-bold text-brand">{inv.invoiceNo}</td>
-                  <td className="p-3">{inv.date}</td>
+                  <td className="p-3 font-bold text-brand whitespace-nowrap">{inv.invoiceNo}</td>
+                  <td className="p-3 whitespace-nowrap">{inv.date}</td>
                   <td className="p-3 font-medium text-gray-900">{inv.customerName}</td>
-                  <td className="p-3 text-right font-bold">₹{Number(inv.grandTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                  <td className="p-3 text-right font-semibold text-emerald-700">
+                  <td className="p-3 text-right font-bold whitespace-nowrap">₹{Number(inv.grandTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td className="p-3 text-right font-semibold text-emerald-700 whitespace-nowrap">
                     ₹{Number(inv.paidAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="p-3 text-right font-semibold text-amber-700">
+                  <td className="p-3 text-right font-semibold text-amber-700 whitespace-nowrap">
                     ₹{Number(inv.outstanding !== undefined ? inv.outstanding : inv.grandTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="p-3 text-center whitespace-nowrap">
                     <span className={`px-2.5 py-1 rounded-full font-bold text-[10px] ${
                       inv.paymentStatus === 'Paid'
                         ? 'bg-emerald-100 text-brand'
@@ -202,27 +202,32 @@ export default function InvoicesPage() {
                       {inv.paymentStatus}
                     </span>
                   </td>
-                  <td className="p-3 text-right space-x-1.5">
-                    {inv.paymentStatus !== 'Paid' && inv.id && (
+                  <td className="p-3 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {inv.paymentStatus !== 'Paid' && inv.id && (
+                        <button
+                          onClick={() => openPayModal(inv)}
+                          title="Record Payment"
+                          className="p-1.5 bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100 rounded transition"
+                        >
+                          <Wallet className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       <button
-                        onClick={() => openPayModal(inv)}
-                        className="bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100 px-2.5 py-1 rounded text-xs font-semibold inline-flex items-center gap-1"
+                        onClick={() => handlePreview(inv)}
+                        title="Preview Invoice (Document 1 Format)"
+                        className="p-1.5 bg-gray-100 border border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-200 rounded transition"
                       >
-                        <Wallet className="w-3 h-3" /> Record Payment
+                        <Eye className="w-3.5 h-3.5" />
                       </button>
-                    )}
-                    <button
-                      onClick={() => handlePreview(inv)}
-                      className="bg-gray-100 border border-gray-300 text-gray-800 px-2.5 py-1 rounded text-xs hover:bg-gray-200 font-medium inline-flex items-center gap-1"
-                    >
-                      <Eye className="w-3 h-3" /> Preview Document 1
-                    </button>
-                    <button
-                      onClick={() => handleDownloadPdf(inv)}
-                      className="bg-brand text-white px-2.5 py-1 rounded text-xs hover:bg-brand-dark font-medium inline-flex items-center gap-1"
-                    >
-                      <Download className="w-3 h-3" /> PDF
-                    </button>
+                      <button
+                        onClick={() => handleDownloadPdf(inv)}
+                        title="Download PDF"
+                        className="p-1.5 bg-brand text-white hover:bg-brand-dark rounded transition shadow-xs"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

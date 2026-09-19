@@ -496,44 +496,44 @@ export default function ProductsPage() {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold border-b border-gray-200">
-                  <th className="p-3.5">SKU / Code</th>
+                  <th className="p-3.5 whitespace-nowrap">SKU / Code</th>
                   <th className="p-3.5">Product / Service Name</th>
-                  <th className="p-3.5">Category</th>
-                  <th className="p-3.5">Brand</th>
-                  <th className="p-3.5">Model</th>
-                  <th className="p-3.5">Selling Price</th>
-                  <th className="p-3.5">Stock</th>
-                  <th className="p-3.5 text-right">Actions</th>
+                  <th className="p-3.5 whitespace-nowrap">Category</th>
+                  <th className="p-3.5 whitespace-nowrap">Brand</th>
+                  <th className="p-3.5 whitespace-nowrap">Model</th>
+                  <th className="p-3.5 whitespace-nowrap">Selling Price</th>
+                  <th className="p-3.5 whitespace-nowrap">Stock</th>
+                  <th className="p-3.5 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {products.map((p) => (
                   <tr key={p.id} className="hover:bg-gray-50/70 transition">
-                    <td className="p-3.5 font-mono font-bold text-brand">{p.sku}</td>
+                    <td className="p-3.5 font-mono font-bold text-brand whitespace-nowrap">{p.sku}</td>
                     <td className="p-3.5">
                       <div className="font-semibold text-gray-900">{p.productName}</div>
                       {p.serialNumber && (
                         <div className="text-[10px] text-gray-400">S/N: {p.serialNumber}</div>
                       )}
                     </td>
-                    <td className="p-3.5">
+                    <td className="p-3.5 whitespace-nowrap">
                       <span className="bg-gray-100 text-gray-800 px-2 py-0.5 rounded font-semibold text-[10px]">
                         {p.category?.categoryName || p.categoryId}
                       </span>
                     </td>
-                    <td className="p-3.5">
+                    <td className="p-3.5 whitespace-nowrap">
                       <span className="font-medium text-gray-700">
                         {p.brand?.brandName || p.brandId}
                       </span>
                     </td>
-                    <td className="p-3.5 font-mono text-[11px] text-gray-600">{p.model}</td>
-                    <td className="p-3.5 font-bold text-gray-900">
+                    <td className="p-3.5 font-mono text-[11px] text-gray-600 whitespace-nowrap">{p.model}</td>
+                    <td className="p-3.5 font-bold text-gray-900 whitespace-nowrap">
                       ₹{p.sellingPrice?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       <span className="text-[10px] font-normal text-gray-400 block">
                         +{p.taxRate || 18}% GST
                       </span>
                     </td>
-                    <td className="p-3.5">
+                    <td className="p-3.5 whitespace-nowrap">
                       {p.category?.categoryName === 'Service' ? (
                         <span className="text-gray-400 font-medium">Service Rate</span>
                       ) : (
@@ -547,28 +547,30 @@ export default function ProductsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="p-3.5 text-right space-x-1">
-                      <button
-                        onClick={() => openDetailModal(p)}
-                        title="View Specifications & History"
-                        className="p-1 text-gray-600 hover:text-brand hover:bg-emerald-50 rounded transition"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openEditModal(p)}
-                        title="Edit Product"
-                        className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(p)}
-                        title="Archive Product"
-                        className="p-1 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <td className="p-3.5 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => openDetailModal(p)}
+                          title="View Specifications & History"
+                          className="p-1.5 text-gray-500 hover:text-brand hover:bg-brand/10 rounded transition"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openEditModal(p)}
+                          title="Edit Product"
+                          className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(p)}
+                          title="Archive Product"
+                          className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
